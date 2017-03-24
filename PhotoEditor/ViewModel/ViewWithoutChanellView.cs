@@ -38,5 +38,9 @@ namespace PhotoEditor.ViewModel
         {
             histortHelper.Redo(MainImage.Image);
         }
+        public WriteableBitmap GetMainImage()
+        {
+            return MainImage.Image;
+        }
     }
 }

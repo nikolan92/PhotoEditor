@@ -1,14 +1,13 @@
 ﻿using PhotoEditor.DataModel;
 using PhotoEditor.HistoryProvider;
 using PhotoEditor.HistoryProvider.Commands;
-using PhotoEditor.ImageOpetarions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-
+using PhotoEditor.ImageOperations;
 namespace PhotoEditor.ViewModel
 {
     public class ViewWithChanellView : IUserControl
@@ -18,8 +17,11 @@ namespace PhotoEditor.ViewModel
         {
             this.histortHelper = histortHelper;
             MainImage = new ImageViewModel(image);
+            RedChanellImage = new ImageViewModel();
+            GreenChanellImage = new ImageViewModel();
+            BlueChanellImage = new ImageViewModel();
             PrepareRGBImages(image);
-           
+            DoChanellFilter();
         }
         private ImageViewModel mainImage;
         public ImageViewModel MainImage
@@ -46,6 +48,8 @@ namespace PhotoEditor.ViewModel
             set { blueChanellImage = value; }
         }
 
+
+        //PrepareRGB reseize MainImage and makes three clones images RedChanellImage,GreenChanellImage,BlueChanellImage
         private void PrepareRGBImages(WriteableBitmap imageForClone)
         {
             //If image is larger then 250 in width then reseize it TODO:Predict situation when the height is bigger than width
@@ -54,30 +58,50 @@ namespace PhotoEditor.ViewModel
                 //Making three copies of resized mainImage image 
                 double heightScale = MainImage.Image.PixelWidth / 250.0;
                 int height = (int)Math.Floor(MainImage.Image.PixelWidth / heightScale);
-                RedChanellImage = new ImageViewModel(ReseizeImage.LinearReseizeImageUnsafe(MainImage.Image, 250, height));
-                GreenChanellImage = new ImageViewModel(RedChanellImage.Image.Clone());
-                BlueChanellImage = new ImageViewModel(RedChanellImage.Image.Clone());
+                RedChanellImage.Image = ReseizeImage.LinearReseizeImageUnsafe(MainImage.Image, 250, height);
+                GreenChanellImage.Image = RedChanellImage.Image.Clone();
+                BlueChanellImage.Image = RedChanellImage.Image.Clone();
             }
             else
             {//in this case just make three copies
-                RedChanellImage = new ImageViewModel(imageForClone.Clone());
-                GreenChanellImage = new ImageViewModel(imageForClone.Clone());
-                BlueChanellImage = new ImageViewModel(imageForClone.Clone());
+                RedChanellImage.Image = imageForClone.Clone();
+                GreenChanellImage.Image = imageForClone.Clone();
+                BlueChanellImage.Image = imageForClone.Clone();
             }
         }
+        private void DoChanellFilter()
+        {
+            ColorChanell.ChanellFilterUnsafe(RedChanellImage.Image, ColorChanell.Chenell.Red);
+            ColorChanell.ChanellFilterUnsafe(GreenChanellImage.Image, ColorChanell.Chenell.Green);
+            ColorChanell.ChanellFilterUnsafe(BlueChanellImage.Image, ColorChanell.Chenell.Blue);
+        }
+
+        //Because InvertFilter is not destructive function
+        //there is no need to make fresh copie from MainImage just need to do invert on existing Red,Green and Blue image
         public void InvertFilter()
         {
             histortHelper.AddToHistory(new InvertFilterCommand(), MainImage.Image);
+            PrepareRGBImages(MainImage.Image);
+            DoChanellFilter();
         }
 
         public void Undo()
         {
-            throw new NotImplementedException();
+            histortHelper.Undo(MainImage.Image);
+            PrepareRGBImages(MainImage.Image);
+            DoChanellFilter();
         }
 
         public void Redo()
         {
-            throw new NotImplementedException();
+            histortHelper.Redo(MainImage.Image);
+            PrepareRGBImages(MainImage.Image);
+            DoChanellFilter();
+        }
+
+        public WriteableBitmap GetMainImage()
+        {
+            return MainImage.Image;
         }
     }
 }

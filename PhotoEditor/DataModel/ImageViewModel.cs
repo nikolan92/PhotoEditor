@@ -4,6 +4,10 @@ namespace PhotoEditor.DataModel
 {
     public class ImageViewModel : ObservableObject
     {
+        public ImageViewModel()
+        {
+            Image = null;
+        }
         public ImageViewModel(WriteableBitmap bitmapImage)
         {
             Image = bitmapImage;

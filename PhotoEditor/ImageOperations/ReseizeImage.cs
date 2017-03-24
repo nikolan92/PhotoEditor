@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
-namespace PhotoEditor.ImageOpetarions
+namespace PhotoEditor.ImageOperations
 {
     public class ReseizeImage
     {

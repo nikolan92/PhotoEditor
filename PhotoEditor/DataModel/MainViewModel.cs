@@ -1,4 +1,4 @@
-﻿using PhotoEditor.ImageOpetarions;
+﻿using PhotoEditor.ImageOperations;
 using System.Windows.Media.Imaging;
 
 namespace PhotoEditor.DataModel

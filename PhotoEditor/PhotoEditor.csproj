@@ -57,7 +57,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ImageOpetarions\ReseizeImage.cs" />
+    <Compile Include="ImageOperations\ReseizeImage.cs" />
     <Compile Include="Utility\InfinityStack.cs" />
     <Compile Include="Utility\LoadAndSaveHelper.cs" />
     <Compile Include="ViewModel\IUserControl.cs" />
@@ -77,8 +77,8 @@
     <Compile Include="HistoryProvider\Commands\ICommand.cs" />
     <Compile Include="HistoryProvider\Commands\InvertFilterCommand.cs" />
     <Compile Include="HistoryProvider\HistoryHelper.cs" />
-    <Compile Include="ImageOpetarions\ColorChanell.cs" />
-    <Compile Include="ImageOpetarions\InvertFilter.cs" />
+    <Compile Include="ImageOperations\ColorChanell.cs" />
+    <Compile Include="ImageOperations\InvertFilter.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

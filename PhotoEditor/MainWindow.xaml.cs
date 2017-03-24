@@ -3,7 +3,6 @@ using PhotoEditor.DataModel;
 using PhotoEditor.HistoryProvider;
 using PhotoEditor.HistoryProvider.Commands;
 using PhotoEditor.ImageOperations;
-using PhotoEditor.ImageOpetarions;
 using PhotoEditor.Utility;
 using PhotoEditor.ViewModel;
 using System;
@@ -51,8 +50,10 @@ namespace PhotoEditor
             sw.Start();
             viewModel.InvertFilter();
             sw.Stop();
+            
             Console.WriteLine("InvertFilter---------------:"+sw.ElapsedMilliseconds + "ms");
             //stopWatch
+            sw.Reset();
             UndoRedoButtonStatusChanged();
             
         }
@@ -62,22 +63,21 @@ namespace PhotoEditor
         }
         private void ButtonShowHideChanellViewClicked(object sender, RoutedEventArgs e)
         {
-            return; //For now
-            //If image is not loaded return
             if (viewModel == null)
                 return;
 
-            if (chanellViewIsOpen == false)
+            if (!chanellViewIsOpen)
             {
+                ChangeView();
                 Storyboard sb = App.Current.Resources["sbChanellViewShow"] as Storyboard;
                 sb.Begin(chanellView);
-                chanellViewIsOpen = true;   
+                 
             }
             else
             {
                 Storyboard sb = App.Current.Resources["sbChanellViewHide"] as Storyboard;
                 sb.Begin(chanellView);
-                chanellViewIsOpen = false;
+                ChangeView();
             }
         }
         private void ButtonUndoClicked(object sender, RoutedEventArgs e)
@@ -101,6 +101,21 @@ namespace PhotoEditor
                 btnRedo.IsEnabled = true;
             else
                 btnRedo.IsEnabled = false;
+        }
+        private void ChangeView()
+        {
+            if (chanellViewIsOpen)
+            {
+                viewModel = new ViewWithoutChanellView(viewModel.GetMainImage(),histortHelper);
+                DataContext = viewModel;
+                chanellViewIsOpen = false;
+            }
+            else
+            {
+                viewModel = new ViewWithChanellView(viewModel.GetMainImage(), histortHelper);
+                DataContext = viewModel;
+                chanellViewIsOpen = true;
+            }
         }
     }
 }
