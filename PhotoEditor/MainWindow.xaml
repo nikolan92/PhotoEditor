@@ -1,0 +1,61 @@
+﻿<Window x:Class="PhotoEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PhotoEditor"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="900" Width="1400"
+        Background="#353535">
+
+    <DockPanel LastChildFill="True" >
+        <!-- Menu buttons -->
+        <StackPanel DockPanel.Dock="Top" VerticalAlignment="Top" Height="45" Orientation="Horizontal" Background="{StaticResource DarkBackground}">
+            <Button x:Name="btnOpen" Style="{StaticResource menuButton}" Margin="5,0,0,0" Click="ButtonOpenClicked">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/Open Folder-48.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="btnSave" Style="{StaticResource menuButton}"  Click="ButtonSaveClicked" Margin="10,0,0,0">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/Save-48.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="btnUndo" Style="{StaticResource menuButton}" Margin="20,0,0,0" Click="ButtonUndoClicked" IsEnabled="False">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/Undo-48.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="btnRedo" Style="{StaticResource menuButton}" Click="ButtonRedoClicked" IsEnabled="False">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/Redo-48.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="btnColorChanell" Style="{StaticResource menuButton}" Margin="20,0,0,0" Click="ButtonShowHideChanellViewClicked">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/ChanellView-48.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
+        </StackPanel>
+        <!--Filters buttons-->
+        <StackPanel DockPanel.Dock="Left" Width="40" Background="{StaticResource DarkBackground}" Orientation="Vertical">
+            <Label Content="Filters" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{StaticResource FontColor}" FontSize="11"/>
+            <Button x:Name="btnInvertColor" Style="{StaticResource menuButton}" Margin="0,9,0,0" Click="ButtonInvertColorsClicked" VerticalAlignment="Top" Width="40" Height="40" HorizontalAlignment="Left">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/Invert Selection-48.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
+            <Label Content="Invert" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{StaticResource FontColor}" FontSize="11" Margin="0,-9,0,0"/>
+        </StackPanel>
+        <!--Chanell view-->
+        <Border x:Name="chanellView" DockPanel.Dock="Bottom" BorderBrush="#FF171717" BorderThickness="0,5,0,0" Margin="0,0,0,-300" Padding="15" Background="{StaticResource DarkBackground}">
+            <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal" Width="Auto">
+                <Image x:Name="redChanellImageView" Source="{Binding RedChanellImage.Image}" Width="250" Margin="0,0,20,0"></Image>
+                <Image x:Name="greenChanellImageView" Source="{Binding GreenChanellImage.Image}" Width="250" Margin="0,0,20,0"></Image>
+                <Image x:Name="blueChanellImageView" Source="{Binding BlueChanellImage.Image}" Width="250" ></Image>
+            </StackPanel>
+        </Border>
+        <!--Main image view-->
+        <Image x:Name="mainImageView" Source="{Binding MainImage.Image}"/>
+    </DockPanel> 
+</Window>
