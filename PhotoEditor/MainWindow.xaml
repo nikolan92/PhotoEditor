@@ -47,8 +47,31 @@
             </Button>
             <Label Content="Invert" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{StaticResource FontColor}" FontSize="11" Margin="0,-9,0,0"/>
         </StackPanel>
+        <!--ImageBasicInfo-->
+        <StackPanel DockPanel.Dock="Right" Width="250 " Background="{StaticResource DarkBackground}" Orientation="Vertical">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Foreground="{StaticResource FontColor}" Content="File name:"/>
+                <Label Grid.Row="1" Grid.Column="0" Foreground="{StaticResource FontColor}" Content="Resolution:"/>
+                <Label Grid.Row="2" Grid.Column="0" Foreground="{StaticResource FontColor}" Content="Bit-Depth:"/>
+
+                <Label Grid.Row="0" Grid.Column="1" Foreground="{StaticResource FontColor}" Content="{Binding ImageBasicInfo.FileName}"/>
+                <Label Grid.Row="1" Grid.Column="1" Foreground="{StaticResource FontColor}" Content="{Binding ImageBasicInfo.Resolution}"/>
+                <Label Grid.Row="2" Grid.Column="1" Foreground="{StaticResource FontColor}" Content="{Binding ImageBasicInfo.BitDepth}"/>
+            </Grid>
+            <GridSplitter HorizontalAlignment="Stretch" BorderThickness="0" Height="1" Background="{StaticResource FontColor}" Margin="0,9,0,0"/>
+        </StackPanel> 
         <!--Chanell view-->
-        <Border x:Name="chanellView" DockPanel.Dock="Bottom" BorderBrush="#FF171717" BorderThickness="0,5,0,0" Margin="0,0,0,-300" Padding="15" Background="{StaticResource DarkBackground}">
+        <Border x:Name="chanellView" DockPanel.Dock="Bottom" BorderBrush="#FF171717" Margin="0,0,0,-300" Padding="15" Background="{StaticResource DarkBackground}">
             <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal" Width="Auto">
                 <Image x:Name="redChanellImageView" Source="{Binding RedChanellImage.Image}" Width="250" Margin="0,0,20,0"></Image>
                 <Image x:Name="greenChanellImageView" Source="{Binding GreenChanellImage.Image}" Width="250" Margin="0,0,20,0"></Image>

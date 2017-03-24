@@ -8,10 +8,10 @@
         <SolidColorBrush x:Key="DarkBackground" Color="#FF1F1F1F" />
         <SolidColorBrush x:Key="FontColor" Color="#FF919191" />
         <!--Chanell view animation-->
-        <Storyboard x:Key="sbChanellViewShow" >
+        <Storyboard x:Key="sbChanellViewShow" x:Shared="False">
             <ThicknessAnimation Storyboard.TargetProperty="Margin" From="0,0,0,-300" To="0,0,0,0" DecelerationRatio=".9" Duration="0:0:0.3" />
         </Storyboard>
-        <Storyboard x:Key="sbChanellViewHide" >
+        <Storyboard x:Key="sbChanellViewHide" x:Shared="False">
             <ThicknessAnimation Storyboard.TargetProperty="Margin" From="0,0,0,0" To="0,0,0,-300" DecelerationRatio=".9" Duration="0:0:0.3" />
         </Storyboard>
         <!--Menu button style-->

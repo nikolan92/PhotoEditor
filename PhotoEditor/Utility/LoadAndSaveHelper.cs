@@ -13,11 +13,17 @@ namespace PhotoEditor.Utility
     public class LoadAndSaveHelper
     {
         private string lastUsedPath;
+        private string lastUsedFileName;
         private MainWindow mainWindow;
         public string LastUsedPath
         {
             get { return lastUsedPath; }
             private set { lastUsedPath = value; }
+        }
+        public string LastUsedFileName
+        {
+            get { return lastUsedFileName; }
+            private set { lastUsedFileName = value; }
         }
 
         public LoadAndSaveHelper(MainWindow mainWindow)
@@ -36,6 +42,7 @@ namespace PhotoEditor.Utility
             {
                 //Change lastUsedPath to the new one
                 LastUsedPath = Path.GetDirectoryName(openFileDialog.FileName);
+                LastUsedFileName = Path.GetFileName(openFileDialog.FileName);
                 BitmapImage bitmapImage = new BitmapImage();
                 bitmapImage.BeginInit();
                 bitmapImage.UriSource = new Uri(openFileDialog.FileName);

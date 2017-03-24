@@ -57,6 +57,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataModel\ImageBasicInfoModel.cs" />
     <Compile Include="ImageOperations\ReseizeImage.cs" />
     <Compile Include="Utility\InfinityStack.cs" />
     <Compile Include="Utility\LoadAndSaveHelper.cs" />
@@ -72,7 +73,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataModel\ImageViewModel.cs" />
-    <Compile Include="DataModel\MainViewModel.cs" />
     <Compile Include="DataModel\ObservableObject.cs" />
     <Compile Include="HistoryProvider\Commands\ICommand.cs" />
     <Compile Include="HistoryProvider\Commands\InvertFilterCommand.cs" />

@@ -13,13 +13,16 @@ namespace PhotoEditor.ViewModel
     public class ViewWithChanellView : IUserControl
     {
         private HistoryHelper histortHelper;
-        public ViewWithChanellView(WriteableBitmap image, HistoryHelper histortHelper)
+        
+        public ViewWithChanellView(WriteableBitmap image, HistoryHelper histortHelper,string fileName)
         {
             this.histortHelper = histortHelper;
             MainImage = new ImageViewModel(image);
             RedChanellImage = new ImageViewModel();
             GreenChanellImage = new ImageViewModel();
             BlueChanellImage = new ImageViewModel();
+
+            ImageBasicInfo = new ImageBasicInfoModel(fileName,image.PixelWidth.ToString(),image.PixelHeight.ToString(), image.Format.BitsPerPixel.ToString());
             PrepareRGBImages(image);
             DoChanellFilter();
         }
@@ -47,8 +50,13 @@ namespace PhotoEditor.ViewModel
             get { return blueChanellImage; }
             set { blueChanellImage = value; }
         }
+        private ImageBasicInfoModel imageBasicInfo;
 
-
+        public ImageBasicInfoModel ImageBasicInfo
+        {
+            get { return imageBasicInfo; }
+            set { imageBasicInfo = value; }
+        }
         //PrepareRGB reseize MainImage and makes three clones images RedChanellImage,GreenChanellImage,BlueChanellImage
         private void PrepareRGBImages(WriteableBitmap imageForClone)
         {

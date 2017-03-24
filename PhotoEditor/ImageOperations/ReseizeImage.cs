@@ -13,7 +13,7 @@ namespace PhotoEditor.ImageOperations
         {
             //Creating new writableBitmap with same parametars as the old one exept new resolution
             WriteableBitmap newWritableBitmap = new WriteableBitmap(newWidth,newHeight,imageData.DpiX,imageData.DpiY,imageData.Format,imageData.Palette);
-
+            
             //Reseize factors
             double nXFactor = (double)imageData.PixelWidth / (double)newWidth;
             double nYFactor = (double)imageData.PixelHeight / (double)newHeight;
@@ -41,30 +41,64 @@ namespace PhotoEditor.ImageOperations
             int strideOriginal = imageData.BackBufferStride;
 
             int x_newPixel;
-            for(int y=0; y<heightInPixelsNew; y++)
+
+            if (bytesPerPixel == 3)
             {
-                byte* currentLine = PtrFirstPixelNew + (y * strideNew);
-                //x_newPixel because x in for is increment by bytesPerPixel
-                x_newPixel = 0;
-                for (int x = 0; x < widthInBytesNew; x = x + bytesPerPixel)
+                for (int y = 0; y < heightInPixelsNew; y++)
                 {
-                    //Calculating which pixel to take from the original
-                    int x_originalPixel = (int)Math.Floor(x_newPixel * nXFactor);
-                    x_originalPixel = x_originalPixel * bytesPerPixel;
-                    int y_originalPixel = (int)Math.Floor(y * nYFactor);
+                    byte* currentLine = PtrFirstPixelNew + (y * strideNew);
+                    //x_newPixel because x in for is increment by bytesPerPixel
+                    x_newPixel = 0;
+                    for (int x = 0; x < widthInBytesNew; x = x + bytesPerPixel)
+                    {
+                        //Calculating which pixel to take from the original
+                        int x_originalPixel = (int)Math.Floor(x_newPixel * nXFactor);
+                        x_originalPixel = x_originalPixel * bytesPerPixel;
+                        int y_originalPixel = (int)Math.Floor(y * nYFactor);
 
-                    x_newPixel++;
-                    //Pointer to the line of the original image from which we are going to take the pixel (with modified y_originalPixel)
-                    byte* currentLineOriginal = PtrFirstPixelOriginal + (y_originalPixel * strideOriginal);
+                        x_newPixel++;
+                        //Pointer to the line of the original image from which we are going to take the pixel (with modified y_originalPixel)
+                        byte* currentLineOriginal = PtrFirstPixelOriginal + (y_originalPixel * strideOriginal);
 
 
-                    int blue = currentLineOriginal[x_originalPixel];
-                    int green = currentLineOriginal[x_originalPixel + 1];
-                    int red = currentLineOriginal[x_originalPixel + 2];
+                        int blue = currentLineOriginal[x_originalPixel];
+                        int green = currentLineOriginal[x_originalPixel + 1];
+                        int red = currentLineOriginal[x_originalPixel + 2];
 
-                    currentLine[x] = (byte)blue;
-                    currentLine[x + 1] = (byte)green;
-                    currentLine[x + 2] = (byte)red;
+                        currentLine[x] = (byte)blue;
+                        currentLine[x + 1] = (byte)green;
+                        currentLine[x + 2] = (byte)red;
+                    }
+                }
+            }
+            else
+            {
+                for (int y = 0; y < heightInPixelsNew; y++)
+                {
+                    byte* currentLine = PtrFirstPixelNew + (y * strideNew);
+                    //x_newPixel because x in for is increment by bytesPerPixel
+                    x_newPixel = 0;
+                    for (int x = 0; x < widthInBytesNew; x = x + bytesPerPixel)
+                    {
+                        //Calculating which pixel to take from the original
+                        int x_originalPixel = (int)Math.Floor(x_newPixel * nXFactor);
+                        x_originalPixel = x_originalPixel * bytesPerPixel;
+                        int y_originalPixel = (int)Math.Floor(y * nYFactor);
+
+                        x_newPixel++;
+                        //Pointer to the line of the original image from which we are going to take the pixel (with modified y_originalPixel)
+                        byte* currentLineOriginal = PtrFirstPixelOriginal + (y_originalPixel * strideOriginal);
+
+
+                        int blue = currentLineOriginal[x_originalPixel];
+                        int green = currentLineOriginal[x_originalPixel + 1];
+                        int red = currentLineOriginal[x_originalPixel + 2];
+                        int alfa = currentLineOriginal[x_originalPixel + 3];
+                        currentLine[x] = (byte)blue;
+                        currentLine[x + 1] = (byte)green;
+                        currentLine[x + 2] = (byte)red;
+                        currentLine[x + 3] = (byte)alfa;
+                    }
                 }
             }
 
