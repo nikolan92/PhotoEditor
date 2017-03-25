@@ -19,7 +19,7 @@ namespace PhotoEditor
     public partial class MainWindow : Window
     {
         private bool chanellViewIsOpen = false;
-        private IUserControl viewModel;
+        private ViewControl viewModel;
         private HistoryHelper histortHelper;
         private LoadAndSaveHelper loadAndSaveHelper;
         
@@ -111,17 +111,39 @@ namespace PhotoEditor
         {
             if (chanellViewIsOpen)
             {
-                viewModel = new ViewWithoutChanellView(viewModel.GetMainImage(),histortHelper, loadAndSaveHelper.LastUsedFileName);
+                viewModel = new ViewWithoutChanellView(viewModel.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
                 DataContext = viewModel;
                 chanellViewIsOpen = false;
             }
             else
             {
-                viewModel = new ViewWithChanellView(viewModel.GetMainImage(), histortHelper, loadAndSaveHelper.LastUsedFileName);
+                viewModel = new ViewWithChanellView(viewModel.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
                 DataContext = viewModel;
                 chanellViewIsOpen = true;
             }
         }
-       
+
+        private void ButtonGammaClicked(object sender, RoutedEventArgs e)
+        {
+            //Hide sharpness setting if is visible
+            if (sharpnessView.Visibility == Visibility.Visible)
+                sharpnessView.Visibility = Visibility.Collapsed;
+            if (gammaView.Visibility == Visibility.Visible)
+                gammaView.Visibility = Visibility.Collapsed;
+            else
+                gammaView.Visibility = Visibility.Visible;
+        }
+
+        private void ButtonSharpnessClicked(object sender, RoutedEventArgs e)
+        {
+            //Hide gamma setting if is visible
+            if (gammaView.Visibility == Visibility.Visible)
+                gammaView.Visibility = Visibility.Collapsed;
+
+            if (sharpnessView.Visibility == Visibility.Visible)
+                sharpnessView.Visibility = Visibility.Collapsed;
+            else
+                sharpnessView.Visibility = Visibility.Visible;
+        }
     }
 }

@@ -10,9 +10,8 @@ using System.Windows.Media.Imaging;
 using PhotoEditor.ImageOperations;
 namespace PhotoEditor.ViewModel
 {
-    public class ViewWithChanellView : IUserControl
+    public class ViewWithChanellView : ViewControl
     {
-        private HistoryHelper histortHelper;
         
         public ViewWithChanellView(WriteableBitmap image, HistoryHelper histortHelper,string fileName)
         {
@@ -25,12 +24,6 @@ namespace PhotoEditor.ViewModel
             ImageBasicInfo = new ImageBasicInfoModel(fileName,image.PixelWidth.ToString(),image.PixelHeight.ToString(), image.Format.BitsPerPixel.ToString());
             PrepareRGBImages(image);
             DoChanellFilter();
-        }
-        private ImageViewModel mainImage;
-        public ImageViewModel MainImage
-        {
-            get { return mainImage; }
-            set { mainImage = value; }
         }
         private ImageViewModel redChanellImage;
         public ImageViewModel RedChanellImage
@@ -49,13 +42,6 @@ namespace PhotoEditor.ViewModel
         {
             get { return blueChanellImage; }
             set { blueChanellImage = value; }
-        }
-        private ImageBasicInfoModel imageBasicInfo;
-
-        public ImageBasicInfoModel ImageBasicInfo
-        {
-            get { return imageBasicInfo; }
-            set { imageBasicInfo = value; }
         }
         //PrepareRGB reseize MainImage and makes three clones images RedChanellImage,GreenChanellImage,BlueChanellImage
         private void PrepareRGBImages(WriteableBitmap imageForClone)
@@ -86,31 +72,27 @@ namespace PhotoEditor.ViewModel
 
         //Because InvertFilter is not destructive function
         //there is no need to make fresh copie from MainImage just need to do invert on existing Red,Green and Blue image
-        public void InvertFilter()
+        public override void InvertFilter()
         {
             histortHelper.AddToHistory(new InvertFilterCommand(), MainImage.Image);
             PrepareRGBImages(MainImage.Image);
             DoChanellFilter();
         }
 
-        public void Undo()
+        public override void Undo()
         {
             histortHelper.Undo(MainImage.Image);
             PrepareRGBImages(MainImage.Image);
             DoChanellFilter();
         }
 
-        public void Redo()
+        public override void Redo()
         {
             histortHelper.Redo(MainImage.Image);
             PrepareRGBImages(MainImage.Image);
             DoChanellFilter();
         }
 
-        public WriteableBitmap GetMainImage()
-        {
-            return MainImage.Image;
-        }
     }
 }
 

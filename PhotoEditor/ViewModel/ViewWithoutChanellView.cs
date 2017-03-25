@@ -10,9 +10,8 @@ using System.Windows.Media.Imaging;
 
 namespace PhotoEditor.ViewModel
 {
-    public class ViewWithoutChanellView : IUserControl
+    public class ViewWithoutChanellView : ViewControl
     {
-        private HistoryHelper histortHelper;
         public ViewWithoutChanellView(WriteableBitmap image, HistoryHelper histortHelper,string fileName)
         {
             this.histortHelper = histortHelper;
@@ -20,36 +19,19 @@ namespace PhotoEditor.ViewModel
 
             ImageBasicInfo = new ImageBasicInfoModel(fileName, image.PixelWidth.ToString(), image.PixelHeight.ToString(), image.Format.BitsPerPixel.ToString());
         }
-        private ImageViewModel mainImage;
-        public ImageViewModel MainImage
-        {
-            get { return mainImage; }
-            set { mainImage = value; }
-        }
-        private ImageBasicInfoModel imageBasicInfo;
-
-        public ImageBasicInfoModel ImageBasicInfo
-        {
-            get { return imageBasicInfo; }
-            set { imageBasicInfo = value; }
-        }
-        public void InvertFilter()
+        public override void InvertFilter()
         {
             histortHelper.AddToHistory(new InvertFilterCommand(), MainImage.Image);
         }
 
-        public void Undo()
+        public override void Undo()
         {
             histortHelper.Undo(MainImage.Image);
         }
 
-        public void Redo()
+        public override void Redo()
         {
             histortHelper.Redo(MainImage.Image);
-        }
-        public WriteableBitmap GetMainImage()
-        {
-            return MainImage.Image;
         }
     }
 }

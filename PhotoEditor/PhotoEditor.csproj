@@ -58,10 +58,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DataModel\ImageBasicInfoModel.cs" />
+    <Compile Include="ImageOperations\GammaFilter.cs" />
     <Compile Include="ImageOperations\ReseizeImage.cs" />
     <Compile Include="Utility\InfinityStack.cs" />
     <Compile Include="Utility\LoadAndSaveHelper.cs" />
-    <Compile Include="ViewModel\IUserControl.cs" />
+    <Compile Include="ViewModel\ViewControl.cs" />
     <Compile Include="ViewModel\ViewWithChanellView.cs" />
     <Compile Include="ViewModel\ViewWithoutChanellView.cs" />
     <Page Include="MainWindow.xaml">
@@ -121,7 +122,12 @@
   <ItemGroup>
     <Resource Include="MenuIcons\Invert Selection-48.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="MenuIcons\Gamma-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MenuIcons\Sharpness-48.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
