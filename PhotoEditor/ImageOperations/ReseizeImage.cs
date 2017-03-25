@@ -18,7 +18,7 @@ namespace PhotoEditor.ImageOperations
             double nXFactor = (double)imageData.PixelWidth / (double)newWidth;
             double nYFactor = (double)imageData.PixelHeight / (double)newHeight;
 
-            //------------------------------- NewImageParametars ----------------------------------------
+            //------------------------------- NewImageParametars ---------------------------------------------
             //Reserve the back buffer for updated
             newWritableBitmap.Lock();
             //Pointer to the back buffer of the new image.(IntPtr pBackBuffer = imageData.BackBuffer;)

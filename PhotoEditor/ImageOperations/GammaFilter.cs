@@ -41,7 +41,7 @@ namespace PhotoEditor.ImageOperations
                     int oldGreen = currentLine[x + 1];
                     int oldRed = currentLine[x + 2];
 
-                    oldBlue =(int)(255.0 * Math.Pow(oldBlue / 255.0, gamma));
+                    oldBlue = (int)(255.0 * Math.Pow(oldBlue / 255.0, gamma));
                     oldGreen = (int)(255.0 * Math.Pow(oldGreen / 255.0, gamma));
                     oldRed = (int)(255.0 * Math.Pow(oldRed / 255.0, gamma));
 
@@ -54,6 +54,87 @@ namespace PhotoEditor.ImageOperations
             imageData.AddDirtyRect(new System.Windows.Int32Rect(0, 0, imageData.PixelWidth, imageData.PixelHeight));
             // Release the back buffer and make it available for display. (This method must be caled from UI thread)
             imageData.Unlock();
+
+        }
+        public static unsafe WriteableBitmap GammaFilterUnsafeWithCopy(WriteableBitmap imageData, double gamma)
+        {
+            WriteableBitmap newImage = new WriteableBitmap(imageData.PixelWidth, imageData.PixelHeight, imageData.DpiX, imageData.DpiY, imageData.Format, imageData.Palette);
+            //Define gamma range
+            if (gamma < 0.05)
+                gamma = 0.05;
+            else if (gamma > 7.0)
+                gamma = 7.0;
+
+            gamma = 1 / gamma;
+
+            //------------------------------- NewImageParametars ---------------------------------------------
+            newImage.Lock();
+            byte* PtrFirstPixelNew = (byte*) newImage.BackBuffer;
+            //------------------------------- OriginalImageParametars ----------------------------------------
+            //Reserve the back buffer for updated
+            imageData.Lock();
+            //Pointer to the back buffer (IntPtr pBackBuffer = imageData.BackBuffer;)
+            byte* PtrFirstPixel = (byte*)imageData.BackBuffer;
+            //Height in pixels
+            int heightInPixels = imageData.PixelHeight;
+            //Number of bits per pixel divided by eight to get number of bytes per pixel
+            int bytesPerPixel = imageData.Format.BitsPerPixel / 8;
+            //Number of bytes per one row (scan line)
+            int widthInBytes = imageData.PixelWidth * bytesPerPixel;
+            //Number of bytes taken to store one row of an image
+            int stride = imageData.BackBufferStride;
+
+            if (bytesPerPixel == 3)
+            {
+                Parallel.For(0, heightInPixels, y =>
+                {
+                    byte* currentLine = PtrFirstPixel + (y * stride);
+                    byte* currentLineNew = PtrFirstPixelNew + (y * stride);
+                    for (int x = 0; x < widthInBytes; x = x + bytesPerPixel)
+                    {
+                        int oldBlue = currentLine[x];
+                        int oldGreen = currentLine[x + 1];
+                        int oldRed = currentLine[x + 2];
+
+                        oldBlue = (int)(255.0 * Math.Pow(oldBlue / 255.0, gamma));
+                        oldGreen = (int)(255.0 * Math.Pow(oldGreen / 255.0, gamma));
+                        oldRed = (int)(255.0 * Math.Pow(oldRed / 255.0, gamma));
+
+                        currentLineNew[x] = (byte)oldBlue;
+                        currentLineNew[x + 1] = (byte)oldGreen;
+                        currentLineNew[x + 2] = (byte)oldRed;
+                    }
+                });
+            }else
+            {
+                Parallel.For(0, heightInPixels, y =>
+                {
+                    byte* currentLine = PtrFirstPixel + (y * stride);
+                    byte* currentLineNew = PtrFirstPixelNew + (y * stride);
+                    for (int x = 0; x < widthInBytes; x = x + bytesPerPixel)
+                    {
+                        int oldBlue = currentLine[x];
+                        int oldGreen = currentLine[x + 1];
+                        int oldRed = currentLine[x + 2];
+
+                        oldBlue = (int)(255.0 * Math.Pow(oldBlue / 255.0, gamma));
+                        oldGreen = (int)(255.0 * Math.Pow(oldGreen / 255.0, gamma));
+                        oldRed = (int)(255.0 * Math.Pow(oldRed / 255.0, gamma));
+
+                        currentLineNew[x] = (byte)oldBlue;
+                        currentLineNew[x + 1] = (byte)oldGreen;
+                        currentLineNew[x + 2] = (byte)oldRed;
+                        currentLineNew[x + 3] = currentLine[x + 3];
+                    }
+                });
+            }
+            // Specify the area of the bitmap that changed. (This method must be caled from UI thread)
+            //imageData.AddDirtyRect(new System.Windows.Int32Rect(0, 0, imageData.PixelWidth, imageData.PixelHeight));
+            // Release the back buffer and make it available for display. (This method must be caled from UI thread)
+            imageData.Unlock();
+            newImage.AddDirtyRect(new System.Windows.Int32Rect(0, 0, imageData.PixelWidth, imageData.PixelHeight));
+            newImage.Unlock();
+            return newImage;
         }
     }
 }

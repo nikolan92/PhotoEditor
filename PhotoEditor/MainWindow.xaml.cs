@@ -125,6 +125,10 @@ namespace PhotoEditor
 
         private void ButtonGammaClicked(object sender, RoutedEventArgs e)
         {
+            //Making backUp image (save reference to the original image) 
+            //after that changes can be made on MainImage and if user deside to cancel operation simply return the reference from backUpImage to MainImage
+            //When slider chages function PreviewGamma will make new image with gamma and show as MainImage
+            viewModel.MakeBackUpImage();
             //Hide sharpness setting if is visible
             if (sharpnessView.Visibility == Visibility.Visible)
                 sharpnessView.Visibility = Visibility.Collapsed;
