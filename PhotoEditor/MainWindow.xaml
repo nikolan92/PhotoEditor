@@ -81,30 +81,11 @@
                 <Label Grid.Row="1" Grid.Column="0" Foreground="{StaticResource FontColor}" Content="Resolution:"/>
                 <Label Grid.Row="2" Grid.Column="0" Foreground="{StaticResource FontColor}" Content="Bit-Depth:"/>
 
-                <Label Grid.Row="0" Grid.Column="1" Foreground="{StaticResource FontColor}" Content="{Binding ImageBasicInfo.FileName}"/>
-                <Label Grid.Row="1" Grid.Column="1" Foreground="{StaticResource FontColor}" Content="{Binding ImageBasicInfo.Resolution}"/>
-                <Label Grid.Row="2" Grid.Column="1" Foreground="{StaticResource FontColor}" Content="{Binding ImageBasicInfo.BitDepth}"/>
+                <Label Grid.Row="0" Grid.Column="1" Foreground="{StaticResource FontColor}" Content="{Binding ImageInfo.FileName}"/>
+                <Label Grid.Row="1" Grid.Column="1" Foreground="{StaticResource FontColor}" Content="{Binding ImageInfo.Resolution}"/>
+                <Label Grid.Row="2" Grid.Column="1" Foreground="{StaticResource FontColor}" Content="{Binding ImageInfo.BitDepth}"/>
             </Grid> 
-            <GridSplitter HorizontalAlignment="Stretch" BorderThickness="0" Height="1" Background="{StaticResource FontColor}"/>
-            <!--Filters settings-->
-            <!--Gamma filter-->
-            <Border x:Name="gammaView" Padding="10" Visibility="Collapsed">
-                <StackPanel>
-                    <Label Foreground="{StaticResource FontColor}" Content="Gamma" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    <Slider x:Name="sliderGamma"/>
-                    <Button Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}"/>
-                    <Button Content="Cancel" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}"/>
-                </StackPanel>
-            </Border>
-            <!--Sharpness filter-->
-            <Border x:Name="sharpnessView" Padding="10" Visibility="Collapsed">
-                <StackPanel>
-                    <Label Foreground="{StaticResource FontColor}" Content="Sharpness" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    <Slider x:Name="sliderSharpness"/>
-                    <Button Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}"/>
-                    <Button Content="Cancel" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}"/>
-                </StackPanel>
-            </Border>
+            <!--<GridSplitter HorizontalAlignment="Stretch" BorderThickness="0" Height="1" Background="{StaticResource FontColor}"/>-->
         </StackPanel> 
         <!--Chanell view-->
         <Border x:Name="chanellView" DockPanel.Dock="Bottom" BorderBrush="#FF171717" Margin="0,0,0,-300" Padding="15" Background="{StaticResource DarkBackground}">
@@ -115,6 +96,6 @@
             </StackPanel>
         </Border>
         <!--Main image view-->
-        <Image x:Name="mainImageView" Source="{Binding MainImage.Image}"/>
+        <Image  Source="{Binding MainImage.Image}"/>
     </DockPanel> 
 </Window>

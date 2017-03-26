@@ -10,35 +10,36 @@ using System.Windows.Media.Imaging;
 using PhotoEditor.ImageOperations;
 namespace PhotoEditor.ViewModel
 {
-    public class ViewWithChanellView : ViewControl
+    public class ViewWithChanell : ViewLogic
     {
         
-        public ViewWithChanellView(WriteableBitmap image, HistoryHelper histortHelper,string fileName)
+        public ViewWithChanell(WriteableBitmap image, HistoryHelper histortHelper,string fileName)
         {
             this.histortHelper = histortHelper;
-            MainImage = new ImageViewModel(image);
-            RedChanellImage = new ImageViewModel();
-            GreenChanellImage = new ImageViewModel();
-            BlueChanellImage = new ImageViewModel();
+            MainImage = new ImageModel(image);
 
-            ImageBasicInfo = new ImageBasicInfoModel(fileName,image.PixelWidth.ToString(),image.PixelHeight.ToString(), image.Format.BitsPerPixel.ToString());
+            RedChanellImage = new ImageModel();
+            GreenChanellImage = new ImageModel();
+            BlueChanellImage = new ImageModel();
+
+            ImageInfo = new ImageInfoModel(fileName,image.PixelWidth.ToString(),image.PixelHeight.ToString(), image.Format.BitsPerPixel.ToString());
             PrepareRGBImages(image);
             DoChanellFilter();
         }
-        private ImageViewModel redChanellImage;
-        public ImageViewModel RedChanellImage
+        private ImageModel redChanellImage;
+        public ImageModel RedChanellImage
         {
             get { return redChanellImage; }
             set { redChanellImage = value; }
         }
-        private ImageViewModel greenChanellImage;
-        public ImageViewModel GreenChanellImage
+        private ImageModel greenChanellImage;
+        public ImageModel GreenChanellImage
         {
             get { return greenChanellImage; }
             set { greenChanellImage = value; }
         }
-        private ImageViewModel blueChanellImage;
-        public ImageViewModel BlueChanellImage
+        private ImageModel blueChanellImage;
+        public ImageModel BlueChanellImage
         {
             get { return blueChanellImage; }
             set { blueChanellImage = value; }
@@ -51,7 +52,7 @@ namespace PhotoEditor.ViewModel
             {
                 //Making three copies of resized mainImage image 
                 double heightScale = MainImage.Image.PixelWidth / 250.0;
-                int height = (int)Math.Floor(MainImage.Image.PixelWidth / heightScale);
+                int height = (int)Math.Floor(MainImage.Image.PixelHeight / heightScale);
                 RedChanellImage.Image = ReseizeImage.LinearReseizeImageUnsafe(MainImage.Image, 250, height);
                 GreenChanellImage.Image = RedChanellImage.Image.Clone();
                 BlueChanellImage.Image = RedChanellImage.Image.Clone();
@@ -70,18 +71,14 @@ namespace PhotoEditor.ViewModel
             ColorChanell.ChanellFilterUnsafe(BlueChanellImage.Image, ColorChanell.Chenell.Blue);
         }
 
-        //Because InvertFilter is not destructive function
-        //there is no need to make fresh copie from MainImage just need to do invert on existing Red,Green and Blue image
-        public override void InvertFilter()
-        {
-            histortHelper.AddToHistory(new InvertFilterCommand(), MainImage.Image);
-            PrepareRGBImages(MainImage.Image);
-            DoChanellFilter();
-        }
-
         public override void Undo()
         {
-            histortHelper.Undo(MainImage.Image);
+            WriteableBitmap undoImage = histortHelper.Undo(MainImage.Image);
+            //If filter was destructive restore image from backUp image
+            //If filter was't destructive MainImage is already changed inside Undo function. 
+            if (undoImage != null)
+                MainImage.Image = undoImage;
+
             PrepareRGBImages(MainImage.Image);
             DoChanellFilter();
         }
@@ -93,6 +90,20 @@ namespace PhotoEditor.ViewModel
             DoChanellFilter();
         }
 
+        public override void ExecuteAndAddCommand(ICommand command)
+        {
+            command.Execute(MainImage.Image);
+            histortHelper.Archive(command);
+            PrepareRGBImages(MainImage.Image);
+            DoChanellFilter();
+        }
+
+        public override void AddCommand(ICommand command)
+        {
+            histortHelper.Archive(command);
+            PrepareRGBImages(MainImage.Image);
+            DoChanellFilter();
+        }
     }
 }
 

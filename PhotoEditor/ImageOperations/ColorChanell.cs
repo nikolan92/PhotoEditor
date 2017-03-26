@@ -5,24 +5,30 @@ namespace PhotoEditor.ImageOperations
 {
     public class ColorChanell
     {
+
         public enum Chenell
         {
             Red,Green,Blue
         }
-        public static unsafe void ChanellFilterUnsafe(WriteableBitmap imageData, Chenell chanell)
+        /// <summary>
+        /// Chanell filter, using sourceAndDestinationImage image to get image data, after chanell separation modified data are copy back into sourceAndDestinationImage. 
+        /// </summary>
+        /// <param name="sourceAndDestinationImage">Image for processing.</param>
+        /// <param name="chanell">Define which color chanell.</param>
+        public static unsafe void ChanellFilterUnsafe(WriteableBitmap sourceAndDestinationImage, Chenell chanell)
         {
             //Reserve the back buffer for updated
-            imageData.Lock();
+            sourceAndDestinationImage.Lock();
             //Pointer to the back buffer (IntPtr pBackBuffer = imageData.BackBuffer;)
-            byte* PtrFirstPixel = (byte*)imageData.BackBuffer;
+            byte* PtrFirstPixel = (byte*)sourceAndDestinationImage.BackBuffer;
             //Height in pixels
-            int heightInPixels = imageData.PixelHeight;
+            int heightInPixels = sourceAndDestinationImage.PixelHeight;
             //Number of bits per pixel divided by eight to get number of bytes per pixel
-            int bytesPerPixel = imageData.Format.BitsPerPixel / 8;
+            int bytesPerPixel = sourceAndDestinationImage.Format.BitsPerPixel / 8;
             //Number of bytes per one row (scan line)
-            int widthInBytes = imageData.PixelWidth * bytesPerPixel;
+            int widthInBytes = sourceAndDestinationImage.PixelWidth * bytesPerPixel;
             //Number of bytes taken to store one row of an image
-            int stride = imageData.BackBufferStride;
+            int stride = sourceAndDestinationImage.BackBufferStride;
 
             if (chanell == Chenell.Red)
             {
@@ -80,9 +86,9 @@ namespace PhotoEditor.ImageOperations
                 });
             }
             // Specify the area of the bitmap that changed. (This method must be caled from UI thread)
-            imageData.AddDirtyRect(new System.Windows.Int32Rect(0, 0, imageData.PixelWidth, imageData.PixelHeight));
+            sourceAndDestinationImage.AddDirtyRect(new System.Windows.Int32Rect(0, 0, sourceAndDestinationImage.PixelWidth, sourceAndDestinationImage.PixelHeight));
             // Release the back buffer and make it available for display. (This method must be caled from UI thread)
-            imageData.Unlock();
+            sourceAndDestinationImage.Unlock();
         }
     }
 }

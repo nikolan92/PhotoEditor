@@ -15,9 +15,10 @@ namespace PhotoEditor.HistoryProvider.Commands
             InvertFilter.InvertFilterUnsafe(imageData);
         }
 
-        public void UnExecute(WriteableBitmap imageData)
+        public WriteableBitmap UnExecute(WriteableBitmap imageData)
         {
             InvertFilter.InvertFilterUnsafe(imageData);
+            return null;
         }
     }
 }

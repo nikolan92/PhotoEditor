@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PhotoEditor.DataModel
 {
-    public class ImageBasicInfoModel : ObservableObject
+    public class ImageInfoModel : ObservableObject
     {
-        public ImageBasicInfoModel(string fileName,string width,string height,string bitDepth)
+        public ImageInfoModel(string fileName,string width,string height,string bitDepth)
         {
             FileName = fileName;
             Resolution = width + " x " + height;

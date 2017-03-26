@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using PhotoEditor.Controls;
 using PhotoEditor.DataModel;
 using PhotoEditor.HistoryProvider;
 using PhotoEditor.HistoryProvider.Commands;
@@ -8,6 +9,7 @@ using PhotoEditor.ViewModel;
 using System;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
@@ -19,13 +21,14 @@ namespace PhotoEditor
     public partial class MainWindow : Window
     {
         private bool chanellViewIsOpen = false;
-        private ViewControl viewModel;
+        private ViewLogic viewLogic;
         private HistoryHelper histortHelper;
         private LoadAndSaveHelper loadAndSaveHelper;
         
         private Stopwatch sw = new Stopwatch();
         public MainWindow()
         {
+            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
             loadAndSaveHelper = new LoadAndSaveHelper(this);
         }
@@ -36,31 +39,22 @@ namespace PhotoEditor
             if(image!= null)
             {
                 histortHelper = new HistoryHelper(10);
-
                 if(!chanellViewIsOpen)
-                    viewModel = new ViewWithoutChanellView(image, histortHelper,loadAndSaveHelper.LastUsedFileName);
+                    viewLogic = new ViewWithoutChanell(image, histortHelper,loadAndSaveHelper.LastUsedFileName);
                 else
-                    viewModel = new ViewWithChanellView(image, histortHelper, loadAndSaveHelper.LastUsedFileName);
-                DataContext = viewModel;
+                    viewLogic = new ViewWithChanell(image, histortHelper, loadAndSaveHelper.LastUsedFileName);
+                DataContext = viewLogic;
                 UndoRedoButtonStatusChanged();
             }
         }
         private void ButtonInvertColorsClicked(object sender, RoutedEventArgs e)
         {
             //If image is not loaded return TODO:Disable all buttons and enable them when tha acction is posible 
-            if (viewModel == null)
+            if (viewLogic == null)
                 return;
 
-            //stopWatch
-            sw.Start();
-            viewModel.InvertFilter();
-            sw.Stop();
-            
-            Console.WriteLine("InvertFilter---------------:"+sw.ElapsedMilliseconds + "ms");
-            //stopWatch
-            sw.Reset();
+            viewLogic.ExecuteAndAddCommand(new InvertFilterCommand());
             UndoRedoButtonStatusChanged();
-            
         }
         private void ButtonSaveClicked(object sender, RoutedEventArgs e)
         {
@@ -68,7 +62,7 @@ namespace PhotoEditor
         }
         private void ButtonShowHideChanellViewClicked(object sender, RoutedEventArgs e)
         {
-            if (viewModel == null)
+            if (viewLogic == null)
                 return;
 
             if (!chanellViewIsOpen)
@@ -87,12 +81,12 @@ namespace PhotoEditor
         }
         private void ButtonUndoClicked(object sender, RoutedEventArgs e)
         {
-            viewModel.Undo();
+            viewLogic.Undo();
             UndoRedoButtonStatusChanged();
         }
         private void ButtonRedoClicked(object sender, RoutedEventArgs e)
         {
-            viewModel.Redo();
+            viewLogic.Redo();
             UndoRedoButtonStatusChanged();
         }
         private void UndoRedoButtonStatusChanged()
@@ -111,43 +105,42 @@ namespace PhotoEditor
         {
             if (chanellViewIsOpen)
             {
-                viewModel = new ViewWithoutChanellView(viewModel.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
-                DataContext = viewModel;
+                viewLogic = new ViewWithoutChanell(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
+                DataContext = viewLogic;
                 chanellViewIsOpen = false;
             }
             else
             {
-                viewModel = new ViewWithChanellView(viewModel.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
-                DataContext = viewModel;
+                viewLogic = new ViewWithChanell(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
+                DataContext = viewLogic;
                 chanellViewIsOpen = true;
             }
         }
 
-        private void ButtonGammaClicked(object sender, RoutedEventArgs e)
-        {
-            //Making backUp image (save reference to the original image) 
-            //after that changes can be made on MainImage and if user deside to cancel operation simply return the reference from backUpImage to MainImage
-            //When slider chages function PreviewGamma will make new image with gamma and show as MainImage
-            viewModel.MakeBackUpImage();
-            //Hide sharpness setting if is visible
-            if (sharpnessView.Visibility == Visibility.Visible)
-                sharpnessView.Visibility = Visibility.Collapsed;
-            if (gammaView.Visibility == Visibility.Visible)
-                gammaView.Visibility = Visibility.Collapsed;
-            else
-                gammaView.Visibility = Visibility.Visible;
-        }
-
         private void ButtonSharpnessClicked(object sender, RoutedEventArgs e)
         {
-            //Hide gamma setting if is visible
-            if (gammaView.Visibility == Visibility.Visible)
-                gammaView.Visibility = Visibility.Collapsed;
 
-            if (sharpnessView.Visibility == Visibility.Visible)
-                sharpnessView.Visibility = Visibility.Collapsed;
-            else
-                sharpnessView.Visibility = Visibility.Visible;
+        }
+
+        private void ButtonGammaClicked(object sender, RoutedEventArgs e)
+        {
+            if (viewLogic != null )
+            {
+                Window gammaControl = new Window
+                {
+                    Title = "Gamma",
+                    Content = new GammaControl(viewLogic)
+                };
+                gammaControl.WindowStyle = WindowStyle.None;
+                gammaControl.AllowsTransparency = true;
+                gammaControl.Width = 300;
+                gammaControl.Height = 130;
+                gammaControl.Left = Left + 100;
+                gammaControl.Top = Top + 100;
+                gammaControl.ShowDialog();
+
+                UndoRedoButtonStatusChanged();
+            }
         }
     }
 }

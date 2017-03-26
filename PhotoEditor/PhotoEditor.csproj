@@ -57,14 +57,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DataModel\ImageBasicInfoModel.cs" />
+    <Compile Include="Controls\GammaControl.xaml.cs">
+      <DependentUpon>GammaControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataModel\ImageInfoModel.cs" />
+    <Compile Include="HistoryProvider\Commands\GammaFilterComand.cs" />
     <Compile Include="ImageOperations\GammaFilter.cs" />
     <Compile Include="ImageOperations\ReseizeImage.cs" />
     <Compile Include="Utility\InfinityStack.cs" />
     <Compile Include="Utility\LoadAndSaveHelper.cs" />
-    <Compile Include="ViewModel\ViewControl.cs" />
-    <Compile Include="ViewModel\ViewWithChanellView.cs" />
-    <Compile Include="ViewModel\ViewWithoutChanellView.cs" />
+    <Compile Include="ViewModel\ViewLogic.cs" />
+    <Compile Include="ViewModel\ViewWithChanell.cs" />
+    <Compile Include="ViewModel\ViewWithoutChanell.cs" />
+    <Page Include="Controls\GammaControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -73,7 +81,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataModel\ImageViewModel.cs" />
+    <Compile Include="DataModel\ImageModel.cs" />
     <Compile Include="DataModel\ObservableObject.cs" />
     <Compile Include="HistoryProvider\Commands\ICommand.cs" />
     <Compile Include="HistoryProvider\Commands\InvertFilterCommand.cs" />

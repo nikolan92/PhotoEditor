@@ -15,26 +15,29 @@ namespace PhotoEditor.HistoryProvider
         InfinityStack<ICommand> redoStack;
         public HistoryHelper(int historySize)
         {
-            undoStack = new InfinityStack<ICommand>(historySize);
-            redoStack = new InfinityStack<ICommand>(historySize);
+            undoStack = new InfinityStack<ICommand>(historySize, null);
+            redoStack = new InfinityStack<ICommand>(historySize, null);
         }
         
-        public void AddToHistory(ICommand command, WriteableBitmap imageData)
+
+        public void Archive(ICommand command)
         {
-            command.Execute(imageData);
             undoStack.Push(command);
             redoStack.Clear();
         }
-        public void Undo(WriteableBitmap imageData)
+        public WriteableBitmap Undo(WriteableBitmap imageData)
         {
+            WriteableBitmap undoImage = null;
             try
             {
                 ICommand undoCommand = undoStack.Pop();
-                undoCommand.UnExecute(imageData);
+                undoImage = undoCommand.UnExecute(imageData);
                 redoStack.Push(undoCommand);
+                return undoImage;
             } catch(InvalidOperationException e)
             {
                 Console.WriteLine(e.ToString());
+                return undoImage;
             }
         }
         public void Redo(WriteableBitmap imageData)
@@ -60,3 +63,11 @@ namespace PhotoEditor.HistoryProvider
         }
     }
 }
+
+
+//public void ArchiveAndExecute(ICommand command, WriteableBitmap imageData)
+//{
+//    command.Execute(imageData);
+//    undoStack.Push(command);
+//    redoStack.Clear();
+//}

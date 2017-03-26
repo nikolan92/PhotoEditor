@@ -10,7 +10,7 @@ namespace PhotoEditor.Utility
     {
         private int top;
         private T[] array;
-
+        private T emptyT;
 
         private int size;
         public int Size
@@ -31,11 +31,12 @@ namespace PhotoEditor.Utility
             Count = 0;
             array = new T[Size];
         }
-        public InfinityStack(int size)
+        public InfinityStack(int size,T emptyElement)
         {
             top = -1;
             Count = 0;
             Size = size;
+            emptyT = emptyElement;
             array = new T[size];
         }
         public void Push(T item)
@@ -58,10 +59,15 @@ namespace PhotoEditor.Utility
                 if (top == -1)
                 {
                     top = Size-1;
-                    return array[top--];
+                    T popItem = array[top--];
+                    array[top+1] = emptyT;
+
+                    return popItem;
                 }else
                 {
-                    return array[top--];
+                    T popItem = array[top--];
+                    array[top + 1] = emptyT;
+                    return popItem;
                 }
             }
             else
