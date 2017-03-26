@@ -6,15 +6,19 @@
              xmlns:local="clr-namespace:PhotoEditor.Controls"
              mc:Ignorable="d" 
              MouseLeftButtonDown="WindowMouseLeftButtonDownClicked"
-             d:DesignHeight="130" d:DesignWidth="300"
+             d:DesignHeight="135" d:DesignWidth="300"
              Background="{StaticResource DarkBackground}">
     <DockPanel LastChildFill="True">
         <!--Gamma filter-->
-        <Border x:Name="gammaView" Padding="5" Visibility="Visible">
+        <Border Padding="5">
             <StackPanel>
                 <Label Foreground="{StaticResource FontColor}" Content="Gamma" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <Slider x:Name="sliderGamma" Value="1.0" Minimum="0.05" Maximum="7.0" Thumb.DragCompleted="SliderGammaCompleted"/>
-                <Label Foreground="{StaticResource FontColor}" Content="{Binding ElementName=sliderGamma,Path=Value}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <DockPanel LastChildFill="True">
+                    <Button DockPanel.Dock="Left" Width="15" Content="-" Background="#FF1F1F1F" Margin="3,0,0,0" Foreground="{StaticResource FontColor}" Click="ButtonMinusClicked"/>
+                    <Button DockPanel.Dock="Right" Width="15" Content="+" Background="#FF1F1F1F" Margin="0,0,3,0" Foreground="{StaticResource FontColor}" Click="ButtonPlusClicked"/>
+                    <Slider x:Name="sliderGamma" Value="1.0"  Minimum="0.05" Maximum="7.0" Thumb.DragCompleted="SliderGammaCompleted" SmallChange="0" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
+                </DockPanel>
+                <TextBox Foreground="{StaticResource FontColor}" Width="30" Text="{Binding ElementName=sliderGamma,Path=Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Right"/>
                 <Button Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonGammaOkClicked"/>
                 <Button Content="Cancel" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonGammaCancelClicked"/>
             </StackPanel>
@@ -22,13 +26,5 @@
     </DockPanel>
 </UserControl>
 
-<!--Sharpness filter-->
-<!--<Border x:Name="sharpnessView" Padding="10" Visibility="Collapsed">
-    <StackPanel>
-        <Label Foreground="{StaticResource FontColor}" Content="Sharpness" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <Slider x:Name="sliderSharpness"/>
-        <Button Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}"/>
-        <Button Content="Cancel" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}"/>
-    </StackPanel>
-</Border>-->
+
 

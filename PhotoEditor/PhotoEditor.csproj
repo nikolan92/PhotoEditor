@@ -60,6 +60,9 @@
     <Compile Include="Controls\GammaControl.xaml.cs">
       <DependentUpon>GammaControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SharpnessControl.xaml.cs">
+      <DependentUpon>SharpnessControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataModel\ImageInfoModel.cs" />
     <Compile Include="HistoryProvider\Commands\GammaFilterComand.cs" />
     <Compile Include="ImageOperations\GammaFilter.cs" />
@@ -70,6 +73,10 @@
     <Compile Include="ViewModel\ViewWithChanell.cs" />
     <Compile Include="ViewModel\ViewWithoutChanell.cs" />
     <Page Include="Controls\GammaControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SharpnessControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -30,7 +30,6 @@ namespace PhotoEditor.Controls
         private WriteableBitmap tempImage;
         public GammaControl(ViewLogic viewLogic)
         {
-            //Window.GetWindow(this).WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
             this.viewLogic = viewLogic;
             //Back Up reference
@@ -55,15 +54,27 @@ namespace PhotoEditor.Controls
             Window.GetWindow(this).Close();
         }
 
+        private void WindowMouseLeftButtonDownClicked(object sender, MouseButtonEventArgs e)
+        {
+            Window.GetWindow(this).DragMove();
+        }
         private void SliderGammaCompleted(object sender, DragCompletedEventArgs e)
         {
             GammaFilter.GammaFilterUnsafeWithCopy(originalImage, tempImage, sliderGamma.Value);
             viewLogic.MainImage.Image = tempImage;
         }
 
-        private void WindowMouseLeftButtonDownClicked(object sender, MouseButtonEventArgs e)
+        private void ButtonPlusClicked(object sender, RoutedEventArgs e)
         {
-            Window.GetWindow(this).DragMove();
+            sliderGamma.Value += 0.05;
+            GammaFilter.GammaFilterUnsafeWithCopy(originalImage, tempImage, sliderGamma.Value);
+            viewLogic.MainImage.Image = tempImage;
+        }
+        private void ButtonMinusClicked(object sender, RoutedEventArgs e)
+        {
+            sliderGamma.Value -= 0.05;
+            GammaFilter.GammaFilterUnsafeWithCopy(originalImage, tempImage, sliderGamma.Value);
+            viewLogic.MainImage.Image = tempImage;
         }
     }
 }

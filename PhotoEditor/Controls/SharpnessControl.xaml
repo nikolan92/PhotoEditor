@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="PhotoEditor.Controls.SharpnessControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PhotoEditor.Controls"
+             mc:Ignorable="d" 
+             MouseLeftButtonDown="WindowMouseLeftButtonDownClicked"
+             d:DesignHeight="130" d:DesignWidth="300"
+             Background="{StaticResource DarkBackground}">
+    <DockPanel LastChildFill="True">
+        <!--Sharpness filter-->
+        <Border Padding="5">
+            <StackPanel>
+                <Label Foreground="{StaticResource FontColor}" Content="Sharpness" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Slider x:Name="sliderSharpness" Value="1.0" Minimum="0.05" Maximum="7.0" Thumb.DragCompleted="SliderSharpnessCompleted"/>
+                <Label Foreground="{StaticResource FontColor}" Content="{Binding ElementName=sliderSharpness,Path=Value}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Button Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}"/>
+                <Button Content="Cancel" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}"/>
+            </StackPanel>
+        </Border>
+    </DockPanel>
+</UserControl>

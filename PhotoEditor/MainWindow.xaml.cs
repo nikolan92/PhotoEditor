@@ -121,20 +121,18 @@ namespace PhotoEditor
         {
 
         }
-
         private void ButtonGammaClicked(object sender, RoutedEventArgs e)
         {
             if (viewLogic != null )
             {
                 Window gammaControl = new Window
                 {
-                    Title = "Gamma",
                     Content = new GammaControl(viewLogic)
                 };
                 gammaControl.WindowStyle = WindowStyle.None;
                 gammaControl.AllowsTransparency = true;
                 gammaControl.Width = 300;
-                gammaControl.Height = 130;
+                gammaControl.Height = 135;
                 gammaControl.Left = Left + 100;
                 gammaControl.Top = Top + 100;
                 gammaControl.ShowDialog();
