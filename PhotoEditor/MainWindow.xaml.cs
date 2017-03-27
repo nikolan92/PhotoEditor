@@ -119,7 +119,22 @@ namespace PhotoEditor
 
         private void ButtonSharpnessClicked(object sender, RoutedEventArgs e)
         {
+            if (viewLogic != null)
+            {
+                Window gammaControl = new Window
+                {
+                    Content = new SharpenControl(viewLogic)
+                };
+                gammaControl.WindowStyle = WindowStyle.None;
+                gammaControl.AllowsTransparency = true;
+                gammaControl.Width = 300;
+                gammaControl.Height = 140;
+                gammaControl.Left = Left + 100;
+                gammaControl.Top = Top + 100;
+                gammaControl.ShowDialog();
 
+                UndoRedoButtonStatusChanged();
+            }
         }
         private void ButtonGammaClicked(object sender, RoutedEventArgs e)
         {

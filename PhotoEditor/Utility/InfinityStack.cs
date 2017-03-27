@@ -29,6 +29,8 @@ namespace PhotoEditor.Utility
         {
             top = -1;
             Count = 0;
+            //for (int i=0; i < size; i++)
+            //    array[i] = emptyT;
             array = new T[Size];
         }
         public InfinityStack(int size,T emptyElement)

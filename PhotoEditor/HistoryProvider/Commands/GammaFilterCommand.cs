@@ -8,7 +8,7 @@ using PhotoEditor.ImageOperations;
 
 namespace PhotoEditor.HistoryProvider.Commands
 {
-    public class GammaFilterComand : ICommand
+    public class GammaFilterCommand : ICommand
     {
         private WriteableBitmap backUpImage;
         private double gammaValue;
@@ -17,7 +17,7 @@ namespace PhotoEditor.HistoryProvider.Commands
         /// </summary>
         /// <param name="imageSource">Image for processing.</param>
         /// <param name="gammaValue">Gamma value between 0.05-7.0</param>
-        public GammaFilterComand(WriteableBitmap imageSource ,double gammaValue)
+        public GammaFilterCommand(WriteableBitmap imageSource ,double gammaValue)
         {
             backUpImage = imageSource;
             this.gammaValue = gammaValue;

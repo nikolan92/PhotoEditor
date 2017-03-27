@@ -39,7 +39,7 @@ namespace PhotoEditor.ImageOperations
             //Number of bytes taken to store one row of an image
             int strideNew = newWritableBitmap.BackBufferStride;
 
-            //------------------------------- OriginalImageParametars ----------------------------------------
+            //------------------------------- SourceImageParametars ----------------------------------------
             //Make sure that other threads can't modify original image during resizeign.
             sourceImage.Lock();
             //Pointer to the back buffer of the original image.(IntPtr pBackBuffer = imageData.BackBuffer;)

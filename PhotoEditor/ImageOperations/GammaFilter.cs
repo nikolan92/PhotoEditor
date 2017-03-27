@@ -77,10 +77,10 @@ namespace PhotoEditor.ImageOperations
                 gammaValue = 7.0;
 
             gammaValue = 1 / gammaValue;
-            //------------------------------- NewImageParametars ---------------------------------------------
+            //------------------------------- DestinationImageParametars -----------------------------------
             destinationImage.Lock();
             byte* PtrFirstPixelNew = (byte*) destinationImage.BackBuffer;
-            //------------------------------- OriginalImageParametars ----------------------------------------
+            //------------------------------- SourceImageParametars ----------------------------------------
             //Reserve the back buffer for updated
             sourceImage.Lock();
             //Pointer to the back buffer (IntPtr pBackBuffer = imageData.BackBuffer;)
@@ -94,50 +94,25 @@ namespace PhotoEditor.ImageOperations
             //Number of bytes taken to store one row of an image
             int stride = sourceImage.BackBufferStride;
 
-            if (bytesPerPixel == 3)
+            Parallel.For(0, heightInPixels, y =>
             {
-                Parallel.For(0, heightInPixels, y =>
+                byte* currentLine = PtrFirstPixel + (y * stride);
+                byte* currentLineNew = PtrFirstPixelNew + (y * stride);
+                for (int x = 0; x < widthInBytes; x = x + bytesPerPixel)
                 {
-                    byte* currentLine = PtrFirstPixel + (y * stride);
-                    byte* currentLineNew = PtrFirstPixelNew + (y * stride);
-                    for (int x = 0; x < widthInBytes; x = x + bytesPerPixel)
-                    {
-                        int oldBlue = currentLine[x];
-                        int oldGreen = currentLine[x + 1];
-                        int oldRed = currentLine[x + 2];
+                    int oldBlue = currentLine[x];
+                    int oldGreen = currentLine[x + 1];
+                    int oldRed = currentLine[x + 2];
 
-                        oldBlue = (int)(255.0 * Math.Pow(oldBlue / 255.0, gammaValue));
-                        oldGreen = (int)(255.0 * Math.Pow(oldGreen / 255.0, gammaValue));
-                        oldRed = (int)(255.0 * Math.Pow(oldRed / 255.0, gammaValue));
+                    oldBlue = (int)(255.0 * Math.Pow(oldBlue / 255.0, gammaValue));
+                    oldGreen = (int)(255.0 * Math.Pow(oldGreen / 255.0, gammaValue));
+                    oldRed = (int)(255.0 * Math.Pow(oldRed / 255.0, gammaValue));
 
-                        currentLineNew[x] = (byte)oldBlue;
-                        currentLineNew[x + 1] = (byte)oldGreen;
-                        currentLineNew[x + 2] = (byte)oldRed;
-                    }
-                });
-            }else
-            {
-                Parallel.For(0, heightInPixels, y =>
-                {
-                    byte* currentLine = PtrFirstPixel + (y * stride);
-                    byte* currentLineNew = PtrFirstPixelNew + (y * stride);
-                    for (int x = 0; x < widthInBytes; x = x + bytesPerPixel)
-                    {
-                        int oldBlue = currentLine[x];
-                        int oldGreen = currentLine[x + 1];
-                        int oldRed = currentLine[x + 2];
-
-                        oldBlue = (int)(255.0 * Math.Pow(oldBlue / 255.0, gammaValue));
-                        oldGreen = (int)(255.0 * Math.Pow(oldGreen / 255.0, gammaValue));
-                        oldRed = (int)(255.0 * Math.Pow(oldRed / 255.0, gammaValue));
-
-                        currentLineNew[x] = (byte)oldBlue;
-                        currentLineNew[x + 1] = (byte)oldGreen;
-                        currentLineNew[x + 2] = (byte)oldRed;
-                        currentLineNew[x + 3] = currentLine[x + 3];
-                    }
-                });
-            }
+                    currentLineNew[x] = (byte)oldBlue;
+                    currentLineNew[x + 1] = (byte)oldGreen;
+                    currentLineNew[x + 2] = (byte)oldRed;
+                }
+            });
             // Specify the area of the bitmap that changed. (This method must be caled from UI thread)
             //imageData.AddDirtyRect(new System.Windows.Int32Rect(0, 0, imageData.PixelWidth, imageData.PixelHeight));
             // Release the back buffer and make it available for display. (This method must be caled from UI thread)

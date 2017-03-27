@@ -1,27 +1,27 @@
-﻿using PhotoEditor.HistoryProvider.Commands;
-using PhotoEditor.ViewModel;
-using System.Windows;
+﻿using PhotoEditor.ViewModel;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using PhotoEditor.ImageOperations;
-using System.Threading;
+using System.Windows;
+using PhotoEditor.HistoryProvider.Commands;
 
 namespace PhotoEditor.Controls
 {
     /// <summary>
-    /// Interaction logic for GammaControl.xaml
+    /// Interaction logic for SharpnessControl.xaml
     /// </summary>
-    public partial class GammaControl : UserControl
+    public partial class SharpenControl : UserControl
     {
         private ViewLogic viewLogic;
         private WriteableBitmap originalImage;
         private WriteableBitmap tempImage;
 
-        public GammaControl(ViewLogic viewLogic)
+        public SharpenControl(ViewLogic viewLogic)
         {
             InitializeComponent();
+
             this.viewLogic = viewLogic;
             //Back Up reference
             originalImage = viewLogic.MainImage.Image;
@@ -29,11 +29,11 @@ namespace PhotoEditor.Controls
             tempImage = originalImage.Clone();
             viewLogic.MainImage.Image = tempImage;
         }
-
         private void ButtonOkClicked(object sender, RoutedEventArgs e)
         {
-            HistoryProvider.Commands.ICommand gammaComand = new GammaFilterCommand(originalImage, slider.Value);
-            viewLogic.AddCommand(gammaComand);
+            int n = (19 - (int)slider.Value);
+            HistoryProvider.Commands.ICommand sharpenComand = new SharpenFilterCommand(originalImage, n);
+            viewLogic.AddCommand(sharpenComand);
 
             Window.GetWindow(this).Close();
         }
@@ -45,29 +45,15 @@ namespace PhotoEditor.Controls
 
             Window.GetWindow(this).Close();
         }
-
         private void WindowMouseLeftButtonDownClicked(object sender, MouseButtonEventArgs e)
         {
             Window.GetWindow(this).DragMove();
         }
-        private void SliderCompleted(object sender, DragCompletedEventArgs e)
+        private void SliderNCompleted(object sender, DragCompletedEventArgs e)
         {
-            GammaFilter.GammaFilterUnsafeWithCopy(originalImage, tempImage, slider.Value);
-        }
-        private void ButtonPlusClicked(object sender, RoutedEventArgs e)
-        {
-            slider.Value += 0.05;
-            GammaFilter.GammaFilterUnsafeWithCopy(originalImage, tempImage, slider.Value);
-        }
-        private void ButtonMinusClicked(object sender, RoutedEventArgs e)
-        {
-            slider.Value -= 0.05;
-            GammaFilter.GammaFilterUnsafeWithCopy(originalImage, tempImage, slider.Value);
+            int n = (19 - (int)slider.Value);
+            SharpenFilter.SharpenFilterUnsafeWithCopy(originalImage, tempImage, n);
         }
 
-        private void SliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-
-        }
     }
 }
