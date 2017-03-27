@@ -5,7 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using PhotoEditor.ImageOperations;
 using System.Windows;
-using PhotoEditor.HistoryProvider.Commands;
+using PhotoEditor.DataModel;
 
 namespace PhotoEditor.Controls
 {
@@ -16,25 +16,18 @@ namespace PhotoEditor.Controls
     {
         private ViewLogic viewLogic;
         private WriteableBitmap originalImage;
-        private WriteableBitmap tempImage;
 
         public SharpenControl(ViewLogic viewLogic)
         {
             InitializeComponent();
-
             this.viewLogic = viewLogic;
-            //Back Up reference
-            originalImage = viewLogic.MainImage.Image;
-            //Clone original image 
-            tempImage = originalImage.Clone();
-            viewLogic.MainImage.Image = tempImage;
+            //Clone MainImage image 
+            originalImage = viewLogic.MainImage.Image.Clone();
         }
         private void ButtonOkClicked(object sender, RoutedEventArgs e)
         {
-            int n = (19 - (int)slider.Value);
-            HistoryProvider.Commands.ICommand sharpenComand = new SharpenFilterCommand(originalImage, n);
-            viewLogic.AddCommand(sharpenComand);
-
+            viewLogic.AddImageReference(new ImageModel(originalImage));
+            viewLogic.RefreshView();
             Window.GetWindow(this).Close();
         }
 
@@ -42,7 +35,6 @@ namespace PhotoEditor.Controls
         {
             //Restore reference
             viewLogic.MainImage.Image = originalImage;
-
             Window.GetWindow(this).Close();
         }
         private void WindowMouseLeftButtonDownClicked(object sender, MouseButtonEventArgs e)
@@ -52,7 +44,7 @@ namespace PhotoEditor.Controls
         private void SliderNCompleted(object sender, DragCompletedEventArgs e)
         {
             int n = (19 - (int)slider.Value);
-            SharpenFilter.SharpenFilterUnsafeWithCopy(originalImage, tempImage, n);
+            SharpenFilter.SharpenFilterUnsafeWithCopy(originalImage, viewLogic.MainImage.Image, n);
         }
 
     }

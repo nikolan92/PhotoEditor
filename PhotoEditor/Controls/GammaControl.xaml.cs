@@ -1,12 +1,11 @@
-﻿using PhotoEditor.HistoryProvider.Commands;
-using PhotoEditor.ViewModel;
+﻿using PhotoEditor.ViewModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using PhotoEditor.ImageOperations;
-using System.Threading;
+using PhotoEditor.DataModel;
 
 namespace PhotoEditor.Controls
 {
@@ -17,24 +16,19 @@ namespace PhotoEditor.Controls
     {
         private ViewLogic viewLogic;
         private WriteableBitmap originalImage;
-        private WriteableBitmap tempImage;
 
         public GammaControl(ViewLogic viewLogic)
         {
             InitializeComponent();
             this.viewLogic = viewLogic;
-            //Back Up reference
-            originalImage = viewLogic.MainImage.Image;
-            //Clone original image 
-            tempImage = originalImage.Clone();
-            viewLogic.MainImage.Image = tempImage;
+            //Clone MainImage image 
+            originalImage = viewLogic.MainImage.Image.Clone();
         }
 
         private void ButtonOkClicked(object sender, RoutedEventArgs e)
         {
-            HistoryProvider.Commands.ICommand gammaComand = new GammaFilterCommand(originalImage, slider.Value);
-            viewLogic.AddCommand(gammaComand);
-
+            viewLogic.AddImageReference(new ImageModel(originalImage));
+            viewLogic.RefreshView();
             Window.GetWindow(this).Close();
         }
 
@@ -42,7 +36,6 @@ namespace PhotoEditor.Controls
         {
             //Restore reference
             viewLogic.MainImage.Image = originalImage;
-
             Window.GetWindow(this).Close();
         }
 
@@ -52,22 +45,17 @@ namespace PhotoEditor.Controls
         }
         private void SliderCompleted(object sender, DragCompletedEventArgs e)
         {
-            GammaFilter.GammaFilterUnsafeWithCopy(originalImage, tempImage, slider.Value);
+            GammaFilter.GammaFilterUnsafeWithCopy(originalImage, viewLogic.MainImage.Image, slider.Value);
         }
         private void ButtonPlusClicked(object sender, RoutedEventArgs e)
         {
             slider.Value += 0.05;
-            GammaFilter.GammaFilterUnsafeWithCopy(originalImage, tempImage, slider.Value);
+            GammaFilter.GammaFilterUnsafeWithCopy(originalImage, viewLogic.MainImage.Image, slider.Value);
         }
         private void ButtonMinusClicked(object sender, RoutedEventArgs e)
         {
             slider.Value -= 0.05;
-            GammaFilter.GammaFilterUnsafeWithCopy(originalImage, tempImage, slider.Value);
-        }
-
-        private void SliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-
+            GammaFilter.GammaFilterUnsafeWithCopy(originalImage, viewLogic.MainImage.Image, slider.Value);
         }
     }
 }

@@ -1,15 +1,11 @@
-﻿using Microsoft.Win32;
-using PhotoEditor.Controls;
+﻿using PhotoEditor.Controls;
 using PhotoEditor.DataModel;
 using PhotoEditor.HistoryProvider;
-using PhotoEditor.HistoryProvider.Commands;
 using PhotoEditor.ImageOperations;
 using PhotoEditor.Utility;
 using PhotoEditor.ViewModel;
-using System;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
@@ -53,7 +49,9 @@ namespace PhotoEditor
             if (viewLogic == null)
                 return;
 
-            viewLogic.ExecuteAndAddCommand(new InvertFilterCommand());
+            viewLogic.AddImageReference(new ImageModel(viewLogic.MainImage.Image.Clone()));
+            InvertFilter.InvertFilterUnsafe(viewLogic.MainImage.Image);
+            viewLogic.RefreshView();
             UndoRedoButtonStatusChanged();
         }
         private void ButtonSaveClicked(object sender, RoutedEventArgs e)

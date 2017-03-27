@@ -1,11 +1,5 @@
 ﻿using PhotoEditor.DataModel;
 using PhotoEditor.HistoryProvider;
-using PhotoEditor.HistoryProvider.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace PhotoEditor.ViewModel
@@ -16,34 +10,28 @@ namespace PhotoEditor.ViewModel
         {
             this.histortHelper = histortHelper;
             MainImage = new ImageModel(image);
-            //BackUpImage = new ImageModel(backUpImage);
 
             ImageInfo = new ImageInfoModel(fileName, image.PixelWidth.ToString(), image.PixelHeight.ToString(), image.Format.BitsPerPixel.ToString());
         }
 
         public override void Undo()
         {
-            WriteableBitmap undoImage = histortHelper.Undo(MainImage.Image);
-            //If filter was been destructive restore image from backUp image
-            //If filter was't been destructive MainImage is already changed inside Undo function. 
-            if (undoImage != null)
-                MainImage.Image = undoImage;
+            histortHelper.Undo(MainImage);
         }
 
         public override void Redo()
         {
-            histortHelper.Redo(MainImage.Image);
+            histortHelper.Redo(MainImage);
         }
 
-        public override void ExecuteAndAddCommand(ICommand command)
+        public override void AddImageReference(ImageModel imageModel)
         {
-            command.Execute(MainImage.Image);
-            histortHelper.Archive(command);
+            histortHelper.Archive(imageModel);
         }
 
-        public override void AddCommand(ICommand command)
+        public override void RefreshView()
         {
-            histortHelper.Archive(command);
+
         }
     }
 }

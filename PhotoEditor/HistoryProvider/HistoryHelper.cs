@@ -1,52 +1,43 @@
-﻿using PhotoEditor.HistoryProvider.Commands;
+﻿using PhotoEditor.DataModel;
 using PhotoEditor.Utility;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 
 namespace PhotoEditor.HistoryProvider
 {
     public class HistoryHelper
     {
-        InfinityStack<ICommand> undoStack;
-        InfinityStack<ICommand> redoStack;
+        InfinityStack<ImageReferenceKeeper> undoStack;
+        InfinityStack<ImageReferenceKeeper> redoStack;
         public HistoryHelper(int historySize)
         {
-            undoStack = new InfinityStack<ICommand>(historySize, null);
-            redoStack = new InfinityStack<ICommand>(historySize, null);
+            undoStack = new InfinityStack<ImageReferenceKeeper>(historySize, null);
+            redoStack = new InfinityStack<ImageReferenceKeeper>(historySize, null);
         }
-        
 
-        public void Archive(ICommand command)
+        public void Archive(ImageModel imageModel)
         {
-            undoStack.Push(command);
+            undoStack.Push(new ImageReferenceKeeper(imageModel));
             redoStack.Clear();
         }
-        public WriteableBitmap Undo(WriteableBitmap imageData)
+        public void Undo(ImageModel imageModel)
         {
-            WriteableBitmap undoImage = null;
             try
             {
-                ICommand undoCommand = undoStack.Pop();
-                undoImage = undoCommand.UnExecute(imageData);
-                redoStack.Push(undoCommand);
-                return undoImage;
+                ImageReferenceKeeper undoImage = undoStack.Pop();
+                undoImage.SwapReference(imageModel);
+                redoStack.Push(undoImage);
             } catch(InvalidOperationException e)
             {
                 Console.WriteLine(e.ToString());
-                return undoImage;
             }
         }
-        public void Redo(WriteableBitmap imageData)
+        public void Redo(ImageModel imageModel)
         {
             try
             {
-                ICommand redoCommand = redoStack.Pop();
-                redoCommand.Execute(imageData);
-                undoStack.Push(redoCommand);
+                ImageReferenceKeeper redoImage = redoStack.Pop();
+                redoImage.SwapReference(imageModel);
+                undoStack.Push(redoImage);
             }
             catch (InvalidOperationException e)
             {

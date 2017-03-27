@@ -1,13 +1,9 @@
 ﻿using PhotoEditor.DataModel;
 using PhotoEditor.HistoryProvider;
-using PhotoEditor.HistoryProvider.Commands;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using PhotoEditor.ImageOperations;
+
 namespace PhotoEditor.ViewModel
 {
     public class ViewWithChanell : ViewLogic
@@ -73,11 +69,7 @@ namespace PhotoEditor.ViewModel
 
         public override void Undo()
         {
-            WriteableBitmap undoImage = histortHelper.Undo(MainImage.Image);
-            //If filter was destructive restore image from backUp image
-            //If filter was't destructive MainImage is already changed inside Undo function. 
-            if (undoImage != null)
-                MainImage.Image = undoImage;
+            histortHelper.Undo(MainImage);
 
             PrepareRGBImages(MainImage.Image);
             DoChanellFilter();
@@ -85,22 +77,18 @@ namespace PhotoEditor.ViewModel
 
         public override void Redo()
         {
-            histortHelper.Redo(MainImage.Image);
+            histortHelper.Redo(MainImage);
             PrepareRGBImages(MainImage.Image);
             DoChanellFilter();
         }
 
-        public override void ExecuteAndAddCommand(ICommand command)
+        public override void AddImageReference(ImageModel imageModel)
         {
-            command.Execute(MainImage.Image);
-            histortHelper.Archive(command);
-            PrepareRGBImages(MainImage.Image);
-            DoChanellFilter();
+            histortHelper.Archive(imageModel);
         }
 
-        public override void AddCommand(ICommand command)
+        public override void RefreshView()
         {
-            histortHelper.Archive(command);
             PrepareRGBImages(MainImage.Image);
             DoChanellFilter();
         }

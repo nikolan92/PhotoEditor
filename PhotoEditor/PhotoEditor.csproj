@@ -64,8 +64,7 @@
       <DependentUpon>SharpnControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataModel\ImageInfoModel.cs" />
-    <Compile Include="HistoryProvider\Commands\GammaFilterCommand.cs" />
-    <Compile Include="HistoryProvider\Commands\SharpenFilterCommand.cs" />
+    <Compile Include="HistoryProvider\ImageKeeper.cs" />
     <Compile Include="ImageOperations\GammaFilter.cs" />
     <Compile Include="ImageOperations\ReseizeImage.cs" />
     <Compile Include="ImageOperations\SharpenFilter.cs" />
@@ -92,8 +91,6 @@
     </Compile>
     <Compile Include="DataModel\ImageModel.cs" />
     <Compile Include="DataModel\ObservableObject.cs" />
-    <Compile Include="HistoryProvider\Commands\ICommand.cs" />
-    <Compile Include="HistoryProvider\Commands\InvertFilterCommand.cs" />
     <Compile Include="HistoryProvider\HistoryHelper.cs" />
     <Compile Include="ImageOperations\ColorChanell.cs" />
     <Compile Include="ImageOperations\InvertFilter.cs" />

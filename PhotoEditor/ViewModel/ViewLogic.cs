@@ -1,13 +1,5 @@
 ﻿using PhotoEditor.DataModel;
 using PhotoEditor.HistoryProvider;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-using PhotoEditor.ImageOperations;
-using PhotoEditor.HistoryProvider.Commands;
 
 namespace PhotoEditor.ViewModel
 {
@@ -26,16 +18,8 @@ namespace PhotoEditor.ViewModel
             get { return imageInfo; }
             set { imageInfo = value; }
         }
-        /// <summary>
-        /// Execute and add command in history stack.
-        /// </summary>
-        /// <param name="command">Command.</param>
-        public abstract void ExecuteAndAddCommand(ICommand command);
-        /// <summary>
-        /// Add command in history stack without executing.
-        /// </summary>
-        /// <param name="command">Command</param>
-        public abstract void AddCommand(ICommand command);
+        public abstract void AddImageReference(ImageModel imageModel);
+        public abstract void RefreshView();
         public abstract void Undo();
         public abstract void Redo();
     }
