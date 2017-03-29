@@ -26,7 +26,7 @@ namespace PhotoEditor
         {
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
-            loadAndSaveHelper = new LoadAndSaveHelper(this);
+            loadAndSaveHelper = new LoadAndSaveHelper();
         }
 
         private void ButtonOpenClicked(object sender, RoutedEventArgs e)
@@ -56,7 +56,9 @@ namespace PhotoEditor
         }
         private void ButtonSaveClicked(object sender, RoutedEventArgs e)
         {
-            
+            if (viewLogic == null)
+                return;
+            loadAndSaveHelper.SaveImage(viewLogic.MainImage.Image);
         }
         private void ButtonShowHideChanellViewClicked(object sender, RoutedEventArgs e)
         {
