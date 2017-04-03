@@ -66,6 +66,7 @@
     <Compile Include="DataModel\ImageInfoModel.cs" />
     <Compile Include="HistoryProvider\ImageKeeper.cs" />
     <Compile Include="ImageOperations\GammaFilter.cs" />
+    <Compile Include="ImageOperations\ImageQuantization.cs" />
     <Compile Include="ImageOperations\ReseizeImage.cs" />
     <Compile Include="ImageOperations\SharpenFilter.cs" />
     <Compile Include="Utility\InfinityStack.cs" />
@@ -141,6 +142,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="MenuIcons\Sharpness-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MenuIcons\Paint Palette-48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

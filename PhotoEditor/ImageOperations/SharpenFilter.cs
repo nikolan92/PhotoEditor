@@ -9,7 +9,12 @@ namespace PhotoEditor.ImageOperations
 {
     public class SharpenFilter
     {
-
+        /// <summary>
+        /// Sharpen filter, using source image to get image data, perform gamma on it and copy modified data into destinationImage. 
+        /// </summary>
+        /// <param name="sourceImage">Source image. This image will not be changed.</param>
+        /// <param name="destinationImage">Destination image. This image will be modified with gamma filter.</param>
+        /// <param name="n">Sharpen amount</param>
         public static unsafe void SharpenFilterUnsafeWithCopy(WriteableBitmap sourceImage, WriteableBitmap destinationImage, int n)
         {
 

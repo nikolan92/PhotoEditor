@@ -14,7 +14,7 @@ namespace PhotoEditor.ImageOperations
         /// Chanell filter, using sourceAndDestinationImage image to get image data, after chanell separation modified data are copy back into sourceAndDestinationImage. 
         /// </summary>
         /// <param name="sourceAndDestinationImage">Image for processing.</param>
-        /// <param name="chanell">Define which color chanell.</param>
+        /// <param name="chanell">Define which color chanell you want to separate.</param>
         public static unsafe void ChanellFilterUnsafe(WriteableBitmap sourceAndDestinationImage, Chenell chanell)
         {
             //Reserve the back buffer for updated

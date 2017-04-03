@@ -19,7 +19,6 @@ namespace PhotoEditor.Utility
             private set { size = value; }
         }
         private int count;
-
         public int Count
         {
             get { return count; }
@@ -62,12 +61,14 @@ namespace PhotoEditor.Utility
                 {
                     top = Size-1;
                     T popItem = array[top--];
+                    //Release memory
                     array[top+1] = emptyT;
 
                     return popItem;
                 }else
                 {
                     T popItem = array[top--];
+                    //Release memory
                     array[top + 1] = emptyT;
                     return popItem;
                 }

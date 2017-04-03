@@ -155,5 +155,16 @@ namespace PhotoEditor
                 UndoRedoButtonStatusChanged();
             }
         }
+
+        private void ButtonImageQuantizationClicked(object sender, RoutedEventArgs e)
+        {
+
+            viewLogic.AddImageReference(new ImageModel(viewLogic.MainImage.Image.Clone()));
+
+            ImageQuantization iq = new ImageQuantization(viewLogic.MainImage.Image);
+            viewLogic.MainImage.Image = iq.MedianCut();
+            viewLogic.RefreshView();
+            UndoRedoButtonStatusChanged();
+        }
     }
 }

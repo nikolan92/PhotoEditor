@@ -61,6 +61,13 @@
                 </Button.Background>
             </Button>
             <Label Content="Sharpness" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="{StaticResource FontColor}" FontSize="11" Margin="0,-9,0,0"/>
+            <!--ImageQuantization button-->
+            <Button Style="{StaticResource menuButton}" Margin="0,9,0,0" Click="ButtonImageQuantizationClicked" VerticalAlignment="Top" Width="40" Height="40" HorizontalAlignment="Center">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/Paint palette-48.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
+            <Label Content="256 color" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="{StaticResource FontColor}" FontSize="11" Margin="0,-9,0,0"/>
         </StackPanel>
         <!--ImageBasicInfo-->
         <StackPanel DockPanel.Dock="Right" Width="250 " Background="{StaticResource DarkBackground}" Orientation="Vertical">
