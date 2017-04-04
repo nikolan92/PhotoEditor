@@ -12,30 +12,86 @@ namespace PhotoEditor.ImageOperations
         private WriteableBitmap imageForQuantization;
 
 
+        /// <summary>
+        /// Initializes a new instance of the ImageQuantization class with the specified parameters.
+        /// </summary>
+        /// <param name="imageForQuantization">Image for quantization.</param>
         public ImageQuantization(WriteableBitmap imageForQuantization)
         {
             this.imageForQuantization = imageForQuantization;
-            //MyColor mc = new MyColor(255, 255, 255);
         }
+        /// <summary>
+        /// Creating new image with limited number of colors, using MedianCut algorithm.
+        /// </summary>
+        /// <returns></returns>
         public WriteableBitmap MedianCut()
         {
             imageForQuantization.Lock();
             // Lock and Unlock must be called from UI thread!
 
-            MyColor[] repColors = FindRepresentativeColorsAsync(256);
-            WriteableBitmap newQuantizedImage =  QuantizeImage(repColors);
-
+            MyColor[] repColors = FindRepresentativeColors(256);
+            WriteableBitmap newQuantizedImage =  QuantizeImageUnsafe(repColors);
 
             // Lock and Unlock must be called from UI thread!
             imageForQuantization.Unlock();
             return newQuantizedImage;
         }
-        private unsafe WriteableBitmap QuantizeImage(MyColor[] newColors)
+        /// <summary>
+        /// Creating new image with limited number of colors, using the most frequently colors from old one.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<WriteableBitmap> MyAlgorithmAsync()
+        {
+            Dictionary<int,MyColor> originalColors = FindOriginalColorUnsafe();
+            MyColor[] colors = await FindMostFreqColorOnImageAsync(originalColors);
+            return QuantizeImageUnsafe(colors);    
+        }
+        /// <summary>
+        /// Going trought dictonary and collecting 256 most frequently colors from original image.
+        /// </summary>
+        /// <param name="originalColors">All colors from original image.</param>
+        /// <returns></returns>
+        private  Task<MyColor[]> FindMostFreqColorOnImageAsync(Dictionary<int,MyColor> originalColors)
+        {
+            return Task.Factory.StartNew(() => {
+                int maxColor = 512;
+
+                MyColor max = new MyColor(0, 0, 0);
+                MyColor[] newColors = new MyColor[maxColor];
+
+                int i = 0;
+                int key = 0;
+                while (i < maxColor)
+                {
+                    max.Count = 0;
+                    foreach (var color in originalColors)
+                    {
+                        if (color.Value.Count > max.Count)
+                        {
+                            max = color.Value;
+                            key = color.Key;//item for remove
+                        }
+                    }
+
+                    originalColors.Remove(key);
+                    newColors[i] = max;
+                    i++;
+                }
+
+                return newColors;
+            });
+        }
+        /// <summary>
+        /// Using old image to create new one with limited number of colors. 
+        /// </summary>
+        /// <param name="newColors">Colors for new image.</param>
+        /// <returns></returns>
+        private unsafe WriteableBitmap QuantizeImageUnsafe(MyColor[] newColors)
         {
             WriteableBitmap newQuantizedImage = new WriteableBitmap(imageForQuantization.PixelWidth, imageForQuantization.PixelHeight,
             imageForQuantization.DpiX, imageForQuantization.DpiY, imageForQuantization.Format, imageForQuantization.Palette);
             newQuantizedImage.Lock();
-
+            
 
             byte* PtrFirstPixelNew = (byte*)newQuantizedImage.BackBuffer;
             byte* PtrFirstPixel = (byte*)imageForQuantization.BackBuffer;
@@ -43,6 +99,7 @@ namespace PhotoEditor.ImageOperations
             int bytesPerPixel = imageForQuantization.Format.BitsPerPixel / 8;
             int widthInBytes = imageForQuantization.PixelWidth * bytesPerPixel;
             int stride = imageForQuantization.BackBufferStride;
+
 
             for (int y = 0; y < heightInPixels; y++)
             {
@@ -82,7 +139,7 @@ namespace PhotoEditor.ImageOperations
         /// </summary>
         /// <param name="maxColor">Number of new colors.</param>
         /// <returns></returns>
-        private MyColor[] FindRepresentativeColorsAsync(int maxColor)
+        private MyColor[] FindRepresentativeColors(int maxColor)
         {
             Dictionary<int, MyColor> originalColors = FindOriginalColorUnsafe();
 
@@ -143,7 +200,7 @@ namespace PhotoEditor.ImageOperations
         /// <summary>
         /// Takes the list of all candidate boxes and returns the one to be split next.
         /// </summary>
-        /// <param name="listOfBoxes"></param>
+        /// <param name="listOfBoxes">Candidates for spliting.</param>
         /// <returns></returns>
         private ColorBox FindColorBoxToSplit(List<ColorBox> listOfBoxes)
         {
@@ -218,7 +275,7 @@ namespace PhotoEditor.ImageOperations
             return toReturn;
         }
         /// <summary>
-        /// Finding longest axis of the box as the one to divide along.
+        /// Finding which color in ColorBox have bigest range.
         /// </summary>
         /// <param name="colorBox">ColorBox.</param>
         /// <returns>0 - RED, 1 - BLUE, 2 - GREEN</returns>
@@ -274,7 +331,6 @@ namespace PhotoEditor.ImageOperations
         private unsafe Dictionary<int, MyColor> FindOriginalColorUnsafe()
         {
             Dictionary<int, MyColor> toReturn = new Dictionary<int, MyColor>();
-
 
             byte* PtrFirstPixel = (byte*)imageForQuantization.BackBuffer;
             int heightInPixels = imageForQuantization.PixelHeight;
@@ -335,7 +391,7 @@ namespace PhotoEditor.ImageOperations
     /// </summary>
     class MyColor
     {
-        int count;
+        public int Count { get; set; }
         public float[] rgb = new float[3];
         public MyColor(float r, float g, float b)
         {
@@ -343,13 +399,16 @@ namespace PhotoEditor.ImageOperations
             rgb[0] = r;
             rgb[1] = g;
             rgb[2] = b;
-            count = 1;
+            Count = 1;
         }
         public void Increment()
         {
-            count++;
+            Count++;
         }
     }
+    /// <summary>
+    /// Class to store information about set of colors.
+    /// </summary>
     class ColorBox
     {
         public float RMin { get; set; }
