@@ -158,19 +158,24 @@ namespace PhotoEditor
             }
         }
 
-        private async void ButtonImageQuantizationClicked(object sender, RoutedEventArgs e)
+        private void ButtonImageQuantizationClicked(object sender, RoutedEventArgs e)
         {
-            if (viewLogic == null)
-                return;
+            if (viewLogic != null)
+            {
+                Window gammaControl = new Window
+                {
+                    Content = new ImageQuantizationControl(viewLogic)
+                };
+                gammaControl.WindowStyle = WindowStyle.None;
+                gammaControl.AllowsTransparency = true;
+                gammaControl.Width = 300;
+                gammaControl.Height = 140;
+                gammaControl.Left = Left + 100;
+                gammaControl.Top = Top + 100;
+                gammaControl.ShowDialog();
 
-            viewLogic.AddImageReference(new ImageModel(viewLogic.MainImage.Image.Clone()));
-
-            ImageQuantization iq = new ImageQuantization(viewLogic.MainImage.Image);
-            WriteableBitmap newImage  = await iq.MyAlgorithmAsync();
-
-            viewLogic.MainImage.Image = newImage;
-            viewLogic.RefreshView();
-            UndoRedoButtonStatusChanged();
+                UndoRedoButtonStatusChanged();
+            }
         }
     }
 }

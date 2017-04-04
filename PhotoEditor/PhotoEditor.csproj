@@ -60,6 +60,9 @@
     <Compile Include="Controls\GammaControl.xaml.cs">
       <DependentUpon>GammaControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ImageQuantizationControl.xaml.cs">
+      <DependentUpon>ImageQuantizationControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SharpnControl.xaml.cs">
       <DependentUpon>SharpnControl.xaml</DependentUpon>
     </Compile>
@@ -75,6 +78,10 @@
     <Compile Include="ViewModel\ViewWithChanell.cs" />
     <Compile Include="ViewModel\ViewWithoutChanell.cs" />
     <Page Include="Controls\GammaControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ImageQuantizationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -42,16 +42,14 @@ namespace PhotoEditor.ImageOperations
         /// Creating new image with limited number of colors, using MedianCut algorithm.
         /// </summary>
         /// <returns></returns>
-        public async Task<WriteableBitmap> MedianCutAsync()
+        public async Task<WriteableBitmap> MedianCutAsync(int maxColors)
         {
             imageForQuantization.Lock();
+            newQuantizedImage.Lock();
             // Lock and Unlock must be called from UI thread!
 
-            IntPtr backBuffer = imageForQuantization.BackBuffer;
-            IntPtr backBufferNew = newQuantizedImage.BackBuffer;
-
             await Task.Factory.StartNew(() => {
-                MyColor[] repColors = FindRepresentativeColors(256);
+                MyColor[] repColors = FindRepresentativeColors(maxColors);
                 QuantizeImageUnsafe(repColors);
             });
             // Lock and Unlock must be called from UI thread!
@@ -64,7 +62,7 @@ namespace PhotoEditor.ImageOperations
         /// Creating new image with limited number of colors, using the most frequently colors from old one.
         /// </summary>
         /// <returns></returns>
-        public async Task<WriteableBitmap> MyAlgorithmAsync()
+        public async Task<WriteableBitmap> MyAlgorithmAsync(int maxColors)
         {
             newQuantizedImage.Lock();
             imageForQuantization.Lock();
@@ -72,7 +70,7 @@ namespace PhotoEditor.ImageOperations
 
             await Task.Factory.StartNew(() => {
             Dictionary<int, MyColor> originalColors = FindOriginalColorUnsafe();
-                MyColor[] repColors = FindMostFreqColorOnImage(originalColors);
+                MyColor[] repColors = FindMostFreqColorOnImage(originalColors,maxColors);
                 QuantizeImageUnsafe(repColors);
             });
 
@@ -87,16 +85,14 @@ namespace PhotoEditor.ImageOperations
         /// </summary>
         /// <param name="originalColors">All colors from original image.</param>
         /// <returns></returns>
-        private  MyColor[] FindMostFreqColorOnImage(Dictionary<int,MyColor> originalColors)
+        private  MyColor[] FindMostFreqColorOnImage(Dictionary<int,MyColor> originalColors,int maxColors)
         {
-                int maxColor = 512;
-
                 MyColor max = new MyColor(0, 0, 0);
-                MyColor[] newColors = new MyColor[maxColor];
+                MyColor[] newColors = new MyColor[maxColors];
 
                 int i = 0;
                 int key = 0;
-                while (i < maxColor)
+                while (i < maxColors)
                 {
                     max.Count = 0;
                     foreach (var color in originalColors)
