@@ -4,7 +4,9 @@ using PhotoEditor.HistoryProvider;
 using PhotoEditor.ImageOperations;
 using PhotoEditor.Utility;
 using PhotoEditor.ViewModel;
+using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
@@ -158,11 +160,15 @@ namespace PhotoEditor
 
         private async void ButtonImageQuantizationClicked(object sender, RoutedEventArgs e)
         {
+            if (viewLogic == null)
+                return;
 
             viewLogic.AddImageReference(new ImageModel(viewLogic.MainImage.Image.Clone()));
 
             ImageQuantization iq = new ImageQuantization(viewLogic.MainImage.Image);
-            viewLogic.MainImage.Image = await iq.MyAlgorithmAsync();
+            WriteableBitmap newImage  = await iq.MyAlgorithmAsync();
+
+            viewLogic.MainImage.Image = newImage;
             viewLogic.RefreshView();
             UndoRedoButtonStatusChanged();
         }

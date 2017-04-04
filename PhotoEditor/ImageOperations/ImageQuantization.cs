@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
@@ -10,7 +11,10 @@ namespace PhotoEditor.ImageOperations
     public class ImageQuantization
     {
         private WriteableBitmap imageForQuantization;
-
+        private int heightInPixels;
+        private int bytesPerPixel;
+        private int widthInBytes;
+        private int stride;
 
         /// <summary>
         /// Initializes a new instance of the ImageQuantization class with the specified parameters.
@@ -19,21 +23,36 @@ namespace PhotoEditor.ImageOperations
         public ImageQuantization(WriteableBitmap imageForQuantization)
         {
             this.imageForQuantization = imageForQuantization;
+
+            heightInPixels = imageForQuantization.PixelHeight;
+            bytesPerPixel = imageForQuantization.Format.BitsPerPixel / 8;
+            widthInBytes = imageForQuantization.PixelWidth * bytesPerPixel;
+            stride = imageForQuantization.BackBufferStride;
         }
         /// <summary>
         /// Creating new image with limited number of colors, using MedianCut algorithm.
         /// </summary>
         /// <returns></returns>
-        public WriteableBitmap MedianCut()
+        public async Task<WriteableBitmap> MedianCutAsync()
         {
+            WriteableBitmap newQuantizedImage = new WriteableBitmap(imageForQuantization.PixelWidth, imageForQuantization.PixelHeight,
+            imageForQuantization.DpiX, imageForQuantization.DpiY, imageForQuantization.Format, imageForQuantization.Palette);
+            newQuantizedImage.Lock();
+
             imageForQuantization.Lock();
             // Lock and Unlock must be called from UI thread!
 
-            MyColor[] repColors = FindRepresentativeColors(256);
-            WriteableBitmap newQuantizedImage =  QuantizeImageUnsafe(repColors);
+            IntPtr backBuffer = imageForQuantization.BackBuffer;
+            IntPtr backBufferNew = newQuantizedImage.BackBuffer;
 
+            await Task.Factory.StartNew(() => {
+                MyColor[] repColors = FindRepresentativeColors(256, backBuffer);
+                QuantizeImageUnsafe(repColors, backBuffer, backBufferNew);
+            });
             // Lock and Unlock must be called from UI thread!
             imageForQuantization.Unlock();
+            newQuantizedImage.AddDirtyRect(new System.Windows.Int32Rect(0, 0, newQuantizedImage.PixelWidth, newQuantizedImage.PixelHeight));
+            newQuantizedImage.Unlock();
             return newQuantizedImage;
         }
         /// <summary>
@@ -42,18 +61,36 @@ namespace PhotoEditor.ImageOperations
         /// <returns></returns>
         public async Task<WriteableBitmap> MyAlgorithmAsync()
         {
-            Dictionary<int,MyColor> originalColors = FindOriginalColorUnsafe();
-            MyColor[] colors = await FindMostFreqColorOnImageAsync(originalColors);
-            return QuantizeImageUnsafe(colors);    
+            //Console.WriteLine("-----------MyAlgorithm-------------"+Thread.CurrentThread.ManagedThreadId);
+            WriteableBitmap newQuantizedImage = new WriteableBitmap(imageForQuantization.PixelWidth, imageForQuantization.PixelHeight,
+            imageForQuantization.DpiX, imageForQuantization.DpiY, imageForQuantization.Format, imageForQuantization.Palette);
+            newQuantizedImage.Lock();
+            imageForQuantization.Lock();
+            // Lock and Unlock must be called from UI thread!
+
+            IntPtr backBuffer = imageForQuantization.BackBuffer;
+            IntPtr backBufferNew = newQuantizedImage.BackBuffer;
+
+            await Task.Factory.StartNew(() => {
+                //Console.WriteLine("----------------Factory--------" + Thread.CurrentThread.ManagedThreadId);
+                Dictionary <int, MyColor> originalColors = FindOriginalColorUnsafe(backBuffer);
+                MyColor[] repColors = FindMostFreqColorOnImage(originalColors);
+                QuantizeImageUnsafe(repColors, backBuffer,backBufferNew);
+            });
+
+            // Lock and Unlock must be called from UI thread!
+            imageForQuantization.Unlock();
+            newQuantizedImage.AddDirtyRect(new System.Windows.Int32Rect(0, 0, newQuantizedImage.PixelWidth, newQuantizedImage.PixelHeight));
+            newQuantizedImage.Unlock();
+            return newQuantizedImage;
         }
         /// <summary>
         /// Going trought dictonary and collecting 256 most frequently colors from original image.
         /// </summary>
         /// <param name="originalColors">All colors from original image.</param>
         /// <returns></returns>
-        private  Task<MyColor[]> FindMostFreqColorOnImageAsync(Dictionary<int,MyColor> originalColors)
+        private  MyColor[] FindMostFreqColorOnImage(Dictionary<int,MyColor> originalColors)
         {
-            return Task.Factory.StartNew(() => {
                 int maxColor = 512;
 
                 MyColor max = new MyColor(0, 0, 0);
@@ -79,26 +116,25 @@ namespace PhotoEditor.ImageOperations
                 }
 
                 return newColors;
-            });
         }
         /// <summary>
         /// Using old image to create new one with limited number of colors. 
         /// </summary>
         /// <param name="newColors">Colors for new image.</param>
         /// <returns></returns>
-        private unsafe WriteableBitmap QuantizeImageUnsafe(MyColor[] newColors)
+        private unsafe void QuantizeImageUnsafe(MyColor[] newColors,IntPtr backBuffer,IntPtr backBufferNew)
         {
-            WriteableBitmap newQuantizedImage = new WriteableBitmap(imageForQuantization.PixelWidth, imageForQuantization.PixelHeight,
-            imageForQuantization.DpiX, imageForQuantization.DpiY, imageForQuantization.Format, imageForQuantization.Palette);
-            newQuantizedImage.Lock();
+            //WriteableBitmap newQuantizedImage = new WriteableBitmap(imageForQuantization.PixelWidth, imageForQuantization.PixelHeight,
+            //imageForQuantization.DpiX, imageForQuantization.DpiY, imageForQuantization.Format, imageForQuantization.Palette);
+            //newQuantizedImage.Lock();
             
 
-            byte* PtrFirstPixelNew = (byte*)newQuantizedImage.BackBuffer;
-            byte* PtrFirstPixel = (byte*)imageForQuantization.BackBuffer;
-            int heightInPixels = imageForQuantization.PixelHeight;
-            int bytesPerPixel = imageForQuantization.Format.BitsPerPixel / 8;
-            int widthInBytes = imageForQuantization.PixelWidth * bytesPerPixel;
-            int stride = imageForQuantization.BackBufferStride;
+            byte* PtrFirstPixelNew = (byte*)backBufferNew;
+            byte* PtrFirstPixel = (byte*)backBuffer;
+            //int heightInPixels = imageForQuantization.PixelHeight;
+            //int bytesPerPixel = imageForQuantization.Format.BitsPerPixel / 8;
+            //int widthInBytes = imageForQuantization.PixelWidth * bytesPerPixel;
+            //int stride = imageForQuantization.BackBufferStride;
 
 
             for (int y = 0; y < heightInPixels; y++)
@@ -128,9 +164,9 @@ namespace PhotoEditor.ImageOperations
                     currentLineNew[x + 2] = (byte)newColors[index].rgb[0];
                 }
             }
-            newQuantizedImage.AddDirtyRect(new System.Windows.Int32Rect(0, 0, imageForQuantization.PixelWidth, imageForQuantization.PixelHeight));
-            newQuantizedImage.Unlock();
-            return newQuantizedImage;
+            //newQuantizedImage.AddDirtyRect(new System.Windows.Int32Rect(0, 0, imageForQuantization.PixelWidth, imageForQuantization.PixelHeight));
+            //newQuantizedImage.Unlock();
+            //return newQuantizedImage;
         }
 
         /// <summary>
@@ -139,9 +175,9 @@ namespace PhotoEditor.ImageOperations
         /// </summary>
         /// <param name="maxColor">Number of new colors.</param>
         /// <returns></returns>
-        private MyColor[] FindRepresentativeColors(int maxColor)
+        private MyColor[] FindRepresentativeColors(int maxColor,IntPtr PtrFirstPixel)
         {
-            Dictionary<int, MyColor> originalColors = FindOriginalColorUnsafe();
+            Dictionary<int, MyColor> originalColors = FindOriginalColorUnsafe(PtrFirstPixel);
 
             if (originalColors.Count <= maxColor)
             {
@@ -239,7 +275,7 @@ namespace PhotoEditor.ImageOperations
         /// </summary>
         /// <param name="colorBox">ColorBox for spliting.</param>
         /// <returns>Two new ColorBox.</returns>
-        ColorBox[] SplitBox(ColorBox colorBox)
+        private ColorBox[] SplitBox(ColorBox colorBox)
         {
             int currentLevel = colorBox.Level;
             int d = FindMaxDimension(colorBox);
@@ -328,15 +364,15 @@ namespace PhotoEditor.ImageOperations
         /// <summary>
         /// Count all colors for image passed from constructor of this class.
         /// </summary>
-        private unsafe Dictionary<int, MyColor> FindOriginalColorUnsafe()
+        private unsafe Dictionary<int, MyColor> FindOriginalColorUnsafe(IntPtr backBuffer)
         {
             Dictionary<int, MyColor> toReturn = new Dictionary<int, MyColor>();
 
-            byte* PtrFirstPixel = (byte*)imageForQuantization.BackBuffer;
-            int heightInPixels = imageForQuantization.PixelHeight;
-            int bytesPerPixel = imageForQuantization.Format.BitsPerPixel / 8;
-            int widthInBytes = imageForQuantization.PixelWidth * bytesPerPixel;
-            int stride = imageForQuantization.BackBufferStride;
+            byte* PtrFirstPixel = (byte*)backBuffer;
+            //int heightInPixels = imageForQuantization.PixelHeight;
+            //int bytesPerPixel = imageForQuantization.Format.BitsPerPixel / 8;
+            //int widthInBytes = imageForQuantization.PixelWidth * bytesPerPixel;
+            //int stride = imageForQuantization.BackBufferStride;
 
             for (int y = 0; y < heightInPixels; y++)
             {
