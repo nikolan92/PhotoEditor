@@ -8,10 +8,12 @@ namespace PhotoEditor.ViewModel
 {
     public class ViewWithChanell : ViewLogic
     {
-        
+        public ImageModel RedChanellImage { get; set; }
+        public ImageModel GreenChanellImage { get; set; }
+        public ImageModel BlueChanellImage { get; set; }
         public ViewWithChanell(WriteableBitmap image, HistoryHelper histortHelper,string fileName)
         {
-            this.histortHelper = histortHelper;
+            HistortHelper = histortHelper;
             MainImage = new ImageModel(image);
 
             RedChanellImage = new ImageModel();
@@ -19,37 +21,38 @@ namespace PhotoEditor.ViewModel
             BlueChanellImage = new ImageModel();
 
             ImageInfo = new ImageInfoModel(fileName,image.PixelWidth.ToString(),image.PixelHeight.ToString(), image.Format.BitsPerPixel.ToString());
-            PrepareRGBImages(image);
+            PrepareRGBImages(MainImage.Image);
             DoChanellFilter();
         }
-        private ImageModel redChanellImage;
-        public ImageModel RedChanellImage
+        public override void Undo()
         {
-            get { return redChanellImage; }
-            set { redChanellImage = value; }
+            HistortHelper.Undo(MainImage);
+            RefreshView();
         }
-        private ImageModel greenChanellImage;
-        public ImageModel GreenChanellImage
+        public override void Redo()
         {
-            get { return greenChanellImage; }
-            set { greenChanellImage = value; }
+            HistortHelper.Redo(MainImage);
+            RefreshView();
         }
-        private ImageModel blueChanellImage;
-        public ImageModel BlueChanellImage
+        public override void RefreshView()
         {
-            get { return blueChanellImage; }
-            set { blueChanellImage = value; }
+            PrepareRGBImages(MainImage.Image);
+            DoChanellFilter();
         }
-        //PrepareRGB reseize MainImage and makes three clones images RedChanellImage,GreenChanellImage,BlueChanellImage
+        /// <summary>
+        /// Making three reseized copies for RedChanellImage,GreenChanellImage,BlueChanellImage from passed image.
+        /// </summary>
+        /// <param name="imageForClone">Source image.</param>
         private void PrepareRGBImages(WriteableBitmap imageForClone)
         {
-            //If image is larger then 250 in width then reseize it TODO:Predict situation when the height is bigger than width
+            //If image is larger then 250 in width then reseize it 
+            //TODO:Predict situation when the height is bigger than width
             if (imageForClone.PixelWidth > 250)
             {
                 //Making three copies of resized mainImage image 
-                double heightScale = MainImage.Image.PixelWidth / 250.0;
-                int height = (int)Math.Floor(MainImage.Image.PixelHeight / heightScale);
-                RedChanellImage.Image = ReseizeImage.LinearReseizeImageUnsafe(MainImage.Image, 250, height);
+                double heightScale = imageForClone.PixelWidth / 250.0;
+                int height = (int)Math.Floor(imageForClone.PixelHeight / heightScale);
+                RedChanellImage.Image = ReseizeImage.LinearReseizeImageUnsafe(imageForClone, 250, height);
                 GreenChanellImage.Image = RedChanellImage.Image.Clone();
                 BlueChanellImage.Image = RedChanellImage.Image.Clone();
             }
@@ -65,32 +68,6 @@ namespace PhotoEditor.ViewModel
             ColorChanell.ChanellFilterUnsafe(RedChanellImage.Image, ColorChanell.Chenell.Red);
             ColorChanell.ChanellFilterUnsafe(GreenChanellImage.Image, ColorChanell.Chenell.Green);
             ColorChanell.ChanellFilterUnsafe(BlueChanellImage.Image, ColorChanell.Chenell.Blue);
-        }
-
-        public override void Undo()
-        {
-            histortHelper.Undo(MainImage);
-
-            PrepareRGBImages(MainImage.Image);
-            DoChanellFilter();
-        }
-
-        public override void Redo()
-        {
-            histortHelper.Redo(MainImage);
-            PrepareRGBImages(MainImage.Image);
-            DoChanellFilter();
-        }
-
-        public override void AddImageReference(ImageModel imageModel)
-        {
-            histortHelper.Archive(imageModel);
-        }
-
-        public override void RefreshView()
-        {
-            PrepareRGBImages(MainImage.Image);
-            DoChanellFilter();
         }
     }
 }

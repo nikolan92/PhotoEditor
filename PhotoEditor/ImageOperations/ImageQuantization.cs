@@ -440,37 +440,36 @@ namespace PhotoEditor.ImageOperations
         public float BMax { get; set; }
 
         public int Level { get; set; }
-        private Dictionary<int,MyColor> colors;
-        public Dictionary<int,MyColor> Colors
-        {
-            get { return colors; }
-            private set { colors = value; }
-        }
+        public Dictionary<int,MyColor> Colors{ get; private set; }
         public ColorBox(Dictionary<int,MyColor> colors, int level)
         {
             Colors = colors;
             Level = level;
 
-            float[] reds = new float[colors.Count];
-            float[] greens = new float[colors.Count];
-            float[] blues = new float[colors.Count];
-
-            int index = 0;
+            RMax = GMax = BMax = 0;
+            RMin = GMin = BMin = 255;
+            //Finding Min and Max range.
             foreach (var color in colors)
             {
                 MyColor mc = color.Value;
-                reds[index] = mc.rgb[0];
-                greens[index] = mc.rgb[1];
-                blues[index] = mc.rgb[2];
 
-                index++;
+                //Red
+                if (mc.rgb[0] > RMax)
+                    RMax = mc.rgb[0];
+                if (mc.rgb[0] < RMin)
+                    RMin = mc.rgb[0];
+                //Blue
+                if (mc.rgb[1] > BMax)
+                    BMax = mc.rgb[1];
+                if (mc.rgb[1] < BMin)
+                    BMin = mc.rgb[0];
+                //Green
+                if (mc.rgb[2] > GMax)
+                    GMax = mc.rgb[2];
+                if (mc.rgb[2] < GMin)
+                    GMin = mc.rgb[0];
             }
-            RMin = reds.Min();
-            RMax = reds.Max();
-            GMin = greens.Min();
-            GMax = greens.Max();
-            BMin = blues.Min();
-            BMax = blues.Max();
+
         }
     }
 }

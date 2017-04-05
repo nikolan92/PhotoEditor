@@ -8,7 +8,7 @@ namespace PhotoEditor.ViewModel
     {
         public ViewWithoutChanell(WriteableBitmap image, HistoryHelper histortHelper,string fileName)
         {
-            this.histortHelper = histortHelper;
+            HistortHelper = histortHelper;
             MainImage = new ImageModel(image);
 
             ImageInfo = new ImageInfoModel(fileName, image.PixelWidth.ToString(), image.PixelHeight.ToString(), image.Format.BitsPerPixel.ToString());
@@ -16,17 +16,12 @@ namespace PhotoEditor.ViewModel
 
         public override void Undo()
         {
-            histortHelper.Undo(MainImage);
+            HistortHelper.Undo(MainImage);
         }
 
         public override void Redo()
         {
-            histortHelper.Redo(MainImage);
-        }
-
-        public override void AddImageReference(ImageModel imageModel)
-        {
-            histortHelper.Archive(imageModel);
+            HistortHelper.Redo(MainImage);
         }
 
         public override void RefreshView()

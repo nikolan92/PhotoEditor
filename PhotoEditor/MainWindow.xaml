@@ -36,6 +36,11 @@
                     <ImageBrush ImageSource="MenuIcons/ChanellView-48.png" Stretch="Uniform"/>
                 </Button.Background>
             </Button>
+            <!--<Button x:Name="btnHistogram" Style="{StaticResource menuButton}" Margin="20,0,0,0" Click="ButtonShowHideHistogramViewClicked">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/Histogram-48.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>-->
         </StackPanel>
         <!--Filters buttons-->
         <StackPanel DockPanel.Dock="Left" Width="55" Background="{StaticResource DarkBackground}" Orientation="Vertical">
@@ -95,18 +100,40 @@
                 <Label Grid.Row="0" Grid.Column="1" Foreground="{StaticResource FontColor}" Content="{Binding ImageInfo.FileName}"/>
                 <Label Grid.Row="1" Grid.Column="1" Foreground="{StaticResource FontColor}" Content="{Binding ImageInfo.Resolution}"/>
                 <Label Grid.Row="2" Grid.Column="1" Foreground="{StaticResource FontColor}" Content="{Binding ImageInfo.BitDepth}"/>
-            </Grid> 
+            </Grid>
             <!--<GridSplitter HorizontalAlignment="Stretch" BorderThickness="0" Height="1" Background="{StaticResource FontColor}"/>-->
-        </StackPanel> 
+        </StackPanel>
         <!--Chanell view-->
         <Border x:Name="chanellView" DockPanel.Dock="Bottom" BorderBrush="#FF171717" Margin="0,0,0,-300" Padding="15" Background="{StaticResource DarkBackground}">
             <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal" Width="Auto">
                 <Image x:Name="redChanellImageView" Source="{Binding RedChanellImage.Image}" Width="250" Margin="0,0,20,0"></Image>
                 <Image x:Name="greenChanellImageView" Source="{Binding GreenChanellImage.Image}" Width="250" Margin="0,0,20,0"></Image>
                 <Image x:Name="blueChanellImageView" Source="{Binding BlueChanellImage.Image}" Width="250" ></Image>
+                <!--Histogram view-->
+                <Border x:Name="redHistogramView" BorderThickness="1" BorderBrush="Black" Background="Transparent" Margin="4" Visibility="Collapsed" VerticalAlignment="Bottom">
+                    <Polygon Points="{Binding ImageHistogram.RedHistogram}" Opacity="0.8" Width="300"  Height="180" Fill="Red" Stretch="Fill" />
+                </Border>
+                <Border x:Name="greenHistogramView" BorderThickness="1" BorderBrush="Black" Background="Transparent" Margin="4" Visibility="Collapsed" VerticalAlignment="Bottom">
+                    <Polygon Points="{Binding ImageHistogram.GreenHistogram}" Opacity="0.8" Width="300"  Height="180" Fill="Green" Stretch="Fill" />
+                </Border>
+                <Border x:Name="blueHistogramView" BorderThickness="1" BorderBrush="Black" Background="Transparent" Margin="4" Visibility="Collapsed" VerticalAlignment="Bottom">
+                    <Polygon Points="{Binding ImageHistogram.BlueHistogram}" Opacity="0.8" Width="300"  Height="180" Fill="Blue" Stretch="Fill" />
+                </Border>
+                <!--Histogram button-->
+                <Button x:Name="btnHistogram" Style="{StaticResource menuButton}" Margin="20,0,0,0" Click="ButtonShowHideHistogramViewClicked" VerticalAlignment="Bottom" Width="40" Height="40">
+                    <Button.Background>
+                        <ImageBrush ImageSource="MenuIcons/Histogram-48.png" Stretch="Uniform"/>
+                    </Button.Background>
+                </Button>
             </StackPanel>
         </Border>
+        <!--Histogram view-->
+        <!--<Border x:Name="histogramView" DockPanel.Dock="Bottom" BorderBrush="#FF171717" Margin="0,0,0,-300" Padding="15" Background="{StaticResource DarkBackground}" Visibility="Collapsed">
+            <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal" Width="Auto">
+
+            </StackPanel>
+        </Border>-->
         <!--Main image view-->
         <Image  Source="{Binding MainImage.Image}"/>
-    </DockPanel> 
+    </DockPanel>
 </Window>

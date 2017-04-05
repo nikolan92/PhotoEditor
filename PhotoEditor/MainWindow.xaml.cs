@@ -6,8 +6,10 @@ using PhotoEditor.Utility;
 using PhotoEditor.ViewModel;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
@@ -19,11 +21,15 @@ namespace PhotoEditor
     public partial class MainWindow : Window
     {
         private bool chanellViewIsOpen = false;
+        private bool histogramViewIsOpen = false;
         private ViewLogic viewLogic;
         private HistoryHelper histortHelper;
         private LoadAndSaveHelper loadAndSaveHelper;
-        
-        private Stopwatch sw = new Stopwatch();
+        private enum ViewModel
+        {
+            ViewWithChanell,ViewWithoutChanell,ViewWithHistogram
+        }
+        //private Stopwatch sw = new Stopwatch();
         public MainWindow()
         {
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -37,10 +43,18 @@ namespace PhotoEditor
             if(image!= null)
             {
                 histortHelper = new HistoryHelper(10);
-                if(!chanellViewIsOpen)
-                    viewLogic = new ViewWithoutChanell(image, histortHelper,loadAndSaveHelper.LastUsedFileName);
+                if (!chanellViewIsOpen)
+                {
+                    viewLogic = new ViewWithoutChanell(image, histortHelper, loadAndSaveHelper.LastUsedFileName);
+                }
+                else if (histogramViewIsOpen)
+                {
+                    viewLogic = new ViewWithHistogram(image, histortHelper, loadAndSaveHelper.LastUsedFileName);
+                }
                 else
+                {
                     viewLogic = new ViewWithChanell(image, histortHelper, loadAndSaveHelper.LastUsedFileName);
+                }
                 DataContext = viewLogic;
                 UndoRedoButtonStatusChanged();
             }
@@ -69,16 +83,27 @@ namespace PhotoEditor
 
             if (!chanellViewIsOpen)
             {
-                ChangeView();
+                ChangeView(ViewModel.ViewWithChanell);
                 Storyboard sb = App.Current.Resources["sbChanellViewShow"] as Storyboard;
-                sb.Begin(chanellView);     
+                sb.Begin(chanellView);
+                chanellViewIsOpen = true;
             }
             else
             {
                 Storyboard sb = App.Current.Resources["sbChanellViewHide"] as Storyboard;
                 //Event when storyBoard finish animation      
-                sb.Completed += (o,s)=> ChangeView();
+                sb.Completed += (o, s) => {
+                    ChangeView(ViewModel.ViewWithoutChanell);
+
+                    redChanellImageView.Visibility = Visibility.Visible;
+                    greenChanellImageView.Visibility = Visibility.Visible;
+                    blueChanellImageView.Visibility = Visibility.Visible;
+                    redHistogramView.Visibility = Visibility.Collapsed;
+                    greenHistogramView.Visibility = Visibility.Collapsed;
+                    blueHistogramView.Visibility = Visibility.Collapsed;
+                };
                 sb.Begin(chanellView);
+                chanellViewIsOpen = false;
             }
         }
         private void ButtonUndoClicked(object sender, RoutedEventArgs e)
@@ -103,22 +128,24 @@ namespace PhotoEditor
             else
                 btnRedo.IsEnabled = false;
         }
-        private void ChangeView()
+        private void ChangeView(ViewModel view)
         {
-            if (chanellViewIsOpen)
+            switch (view)
             {
-                viewLogic = new ViewWithoutChanell(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
-                DataContext = viewLogic;
-                chanellViewIsOpen = false;
-            }
-            else
-            {
-                viewLogic = new ViewWithChanell(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
-                DataContext = viewLogic;
-                chanellViewIsOpen = true;
+                case ViewModel.ViewWithChanell:
+                    viewLogic = new ViewWithChanell(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
+                    DataContext = viewLogic;
+                    break;
+                case ViewModel.ViewWithoutChanell:
+                    viewLogic = new ViewWithoutChanell(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
+                    DataContext = viewLogic;
+                    break;
+                case ViewModel.ViewWithHistogram:
+                    viewLogic = new ViewWithHistogram(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
+                    DataContext = viewLogic;
+                    break;
             }
         }
-
         private void ButtonSharpnessClicked(object sender, RoutedEventArgs e)
         {
             if (viewLogic != null)
@@ -157,7 +184,6 @@ namespace PhotoEditor
                 UndoRedoButtonStatusChanged();
             }
         }
-
         private void ButtonImageQuantizationClicked(object sender, RoutedEventArgs e)
         {
             if (viewLogic != null)
@@ -175,6 +201,35 @@ namespace PhotoEditor
                 gammaControl.ShowDialog();
 
                 UndoRedoButtonStatusChanged();
+            }
+        }
+        private void ButtonShowHideHistogramViewClicked(object sender, RoutedEventArgs e)
+        {
+            if (!histogramViewIsOpen)
+            {
+                redChanellImageView.Visibility = Visibility.Collapsed;
+                greenChanellImageView.Visibility = Visibility.Collapsed;
+                blueChanellImageView.Visibility = Visibility.Collapsed;
+
+                redHistogramView.Visibility = Visibility.Visible;
+                greenHistogramView.Visibility = Visibility.Visible;
+                blueHistogramView.Visibility = Visibility.Visible;
+
+                ChangeView(ViewModel.ViewWithHistogram);
+                histogramViewIsOpen = true;
+            }
+            else
+            {
+                redHistogramView.Visibility = Visibility.Collapsed;
+                greenHistogramView.Visibility = Visibility.Collapsed;
+                blueHistogramView.Visibility = Visibility.Collapsed;
+
+                redChanellImageView.Visibility = Visibility.Visible;
+                greenChanellImageView.Visibility = Visibility.Visible;
+                blueChanellImageView.Visibility = Visibility.Visible;
+
+                ChangeView(ViewModel.ViewWithChanell);
+                histogramViewIsOpen = false;
             }
         }
     }

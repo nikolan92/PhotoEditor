@@ -119,7 +119,6 @@ namespace PhotoEditor.ImageOperations
             sourceImage.Unlock();
             destinationImage.AddDirtyRect(new System.Windows.Int32Rect(0, 0, sourceImage.PixelWidth, sourceImage.PixelHeight));
             destinationImage.Unlock();
-            //return newImage;
         }
     }
 }

@@ -5,20 +5,13 @@ namespace PhotoEditor.ViewModel
 {
     public abstract class ViewLogic
     {
-        protected HistoryHelper histortHelper;
-        protected ImageModel mainImage;
-        public ImageModel MainImage
+        protected HistoryHelper HistortHelper { get; set; }
+        public ImageModel MainImage { get; set; }
+        public ImageInfoModel ImageInfo{ get; set; }
+        public void AddImageReference(ImageModel imageModel)
         {
-            get { return mainImage; }
-            set { mainImage = value; }
+            HistortHelper.Archive(imageModel);
         }
-        protected ImageInfoModel imageInfo;
-        public ImageInfoModel ImageInfo
-        {
-            get { return imageInfo; }
-            set { imageInfo = value; }
-        }
-        public abstract void AddImageReference(ImageModel imageModel);
         public abstract void RefreshView();
         public abstract void Undo();
         public abstract void Redo();
