@@ -44,7 +44,7 @@ namespace PhotoEditor.Controls
         private void SliderNCompleted(object sender, DragCompletedEventArgs e)
         {
             int n = (19 - (int)slider.Value);
-            SharpenFilter.SharpenFilterUnsafeWithCopy(originalImage, viewLogic.MainImage.Image, n);
+            SharpenFilter.SharpenFilter3x3UnsafeWithCopy(originalImage, viewLogic.MainImage.Image, n);
         }
 
     }

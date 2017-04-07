@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,6 @@ namespace PhotoEditor.ImageOperations
             BlueHistogram = new int[256];
             RedMax = BlueMax = GreenMax = 0;
 
-
             sourceAndDestinationImage.Lock();
             //Pointer to the back buffer (IntPtr pBackBuffer = imageData.BackBuffer;)
             byte* PtrFirstPixel = (byte*)sourceAndDestinationImage.BackBuffer;
@@ -42,8 +42,11 @@ namespace PhotoEditor.ImageOperations
             Parallel.For(0, heightInPixels, y =>
             {
                 byte* currentLine = PtrFirstPixel + (y * stride);
+
                 for (int x = 0; x < widthInBytes; x = x + bytesPerPixel)
                 {
+
+
                     int blue = currentLine[x];
                     int green = currentLine[x + 1];
                     int red = currentLine[x + 2];
