@@ -6,6 +6,8 @@ using System.Windows.Media.Imaging;
 using PhotoEditor.ImageOperations;
 using System.Windows;
 using PhotoEditor.DataModel;
+using System.Diagnostics;
+using System;
 
 namespace PhotoEditor.Controls
 {
@@ -43,9 +45,23 @@ namespace PhotoEditor.Controls
         }
         private void SliderNCompleted(object sender, DragCompletedEventArgs e)
         {
-            int n = (19 - (int)slider.Value);
-            SharpenFilter.SharpenFilter3x3UnsafeWithCopy(originalImage, viewLogic.MainImage.Image, n);
-        }
 
+
+            Stopwatch sw = new Stopwatch();
+
+            sw.Start();
+            if (radioBtn3x3.IsChecked.Equals(true))
+            {
+                int n = (19 - (int)slider.Value);
+                SharpenFilter.SharpenFilter3x3UnsafeWithCopy(originalImage, viewLogic.MainImage.Image, n);
+            }
+            else if (radioBtn5x5.IsChecked.Equals(true))
+            {
+                int n = 35 - (int)(2*slider.Value);
+                SharpenFilter.SharpenFilter5x5UnsafeWithCopy(originalImage, viewLogic.MainImage.Image, n);
+            }
+            sw.Stop();
+            Console.WriteLine("Sharpens filter:" + sw.ElapsedMilliseconds + "ms");
+        }
     }
 }

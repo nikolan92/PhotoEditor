@@ -157,7 +157,7 @@ namespace PhotoEditor
                 gammaControl.WindowStyle = WindowStyle.None;
                 gammaControl.AllowsTransparency = true;
                 gammaControl.Width = 300;
-                gammaControl.Height = 140;
+                gammaControl.Height = 155;
                 gammaControl.Left = Left + 100;
                 gammaControl.Top = Top + 100;
                 gammaControl.ShowDialog();

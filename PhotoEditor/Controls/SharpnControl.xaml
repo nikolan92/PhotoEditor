@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:PhotoEditor.Controls"
              mc:Ignorable="d" 
              MouseLeftButtonDown="WindowMouseLeftButtonDownClicked"
-             d:DesignHeight="140" d:DesignWidth="300"
+             d:DesignHeight="155" d:DesignWidth="300"
              Background="{StaticResource DarkBackground}">
     <DockPanel LastChildFill="True">
         <!--Sharpness filter-->
@@ -15,7 +15,11 @@
                 <Label Foreground="{StaticResource FontColor}" Content="Amount" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <Slider x:Name="slider" Value="0" Minimum="0" Maximum="10" Thumb.DragCompleted="SliderNCompleted" SmallChange="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" TickFrequency="1" SelectionEnd="9" IsHitTestVisible="True" RenderTransformOrigin="0.5,0.5"/>
                 <Label Foreground="{StaticResource FontColor}" Content="{Binding ElementName=slider,Path=Value}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <RadioButton x:Name="radioBtn3x3" Foreground="{StaticResource FontColor}" Content="3x3" GroupName="MatrixSelectGroup" IsChecked="True"/>
+                    <RadioButton x:Name="radioBtn5x5" Foreground="{StaticResource FontColor}" Content="5x5" GroupName="MatrixSelectGroup" Margin="10,0,0,0"/>
+                    <RadioButton x:Name="radioBtn7x7" Foreground="{StaticResource FontColor}" Content="7x7" GroupName="MatrixSelectGroup" Margin="10,0,0,0"/>
+                </StackPanel>
                 <Button Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonOkClicked"/>
                 <Button Content="Cancel" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonCancelClicked"/> 
             </StackPanel>
