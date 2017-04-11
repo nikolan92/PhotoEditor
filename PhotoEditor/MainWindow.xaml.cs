@@ -55,6 +55,7 @@ namespace PhotoEditor
                 {
                     viewLogic = new ViewWithChanell(image, histortHelper, loadAndSaveHelper.LastUsedFileName);
                 }
+                //GC.Collect(); // just for test
                 DataContext = viewLogic;
                 UndoRedoButtonStatusChanged();
             }

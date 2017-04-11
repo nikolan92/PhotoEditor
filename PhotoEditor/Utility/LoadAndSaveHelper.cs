@@ -59,6 +59,8 @@ namespace PhotoEditor.Utility
             
             if (saveFileDialog.ShowDialog().Equals(true))
             {
+                //Change lastUsedPath to the new one
+                LastUsedPath = Path.GetDirectoryName(saveFileDialog.FileName);
 
                 string path = Path.GetDirectoryName(saveFileDialog.FileName);
                 string fileName = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);

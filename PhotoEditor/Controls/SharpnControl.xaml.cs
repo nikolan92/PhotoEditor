@@ -59,6 +59,10 @@ namespace PhotoEditor.Controls
             {
                 int n = 35 - (int)(2*slider.Value);
                 SharpenFilter.SharpenFilter5x5UnsafeWithCopy(originalImage, viewLogic.MainImage.Image, n);
+            }else
+            {
+                int n = 43 - (int)(2 * slider.Value);
+                SharpenFilter.SharpenFilter7x7UnsafeWithCopy(originalImage, viewLogic.MainImage.Image, n);
             }
             sw.Stop();
             Console.WriteLine("Sharpens filter:" + sw.ElapsedMilliseconds + "ms");
