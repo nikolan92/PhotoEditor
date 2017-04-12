@@ -233,5 +233,30 @@ namespace PhotoEditor
                 histogramViewIsOpen = false;
             }
         }
+
+        private void ButtonPixelateImageClicked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ButtonSettingsClicked(object sender, RoutedEventArgs e)
+        {
+            if (viewLogic != null)
+            {
+                Window gammaControl = new Window
+                {
+                    Content = new SettingsControl(histortHelper)
+                };
+                gammaControl.WindowStyle = WindowStyle.None;
+                gammaControl.AllowsTransparency = true;
+                gammaControl.Width = 300;
+                gammaControl.Height = 90;
+                gammaControl.Left = Left + 100;
+                gammaControl.Top = Top + 100;
+                gammaControl.ShowDialog();
+
+                UndoRedoButtonStatusChanged();
+            }
+        }
     }
 }

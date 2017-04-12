@@ -81,7 +81,40 @@ namespace PhotoEditor.Utility
 
         public void Reseize(int newSize)
         {
-            throw new NotImplementedException(this.GetType().ToString());
+            if (newSize == Size)
+                return;
+
+            if(Count <= newSize)
+            {
+                T[] tmp = new T[newSize];
+                int countTmp = Count;
+                for(int i = 0; i <= countTmp; i++)
+                {
+                    try
+                    {
+                        tmp[i] = Pop();
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        Count = countTmp;
+                        top = i-1;
+                        Size = newSize;
+                        array = tmp;
+                    }
+                }
+            }
+            else // Count > newSize
+            {
+                T[] tmp = new T[newSize];
+                for (int i = 0; i < newSize; i++)
+                {
+                        tmp[i] = Pop();
+                }
+                Count = newSize;
+                top = newSize-1;
+                Size = newSize;
+                array = tmp;
+            }
         }
     }
 }

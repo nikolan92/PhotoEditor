@@ -8,6 +8,7 @@ namespace PhotoEditor.HistoryProvider
     {
         InfinityStack<ImageReferenceKeeper> undoStack;
         InfinityStack<ImageReferenceKeeper> redoStack;
+
         public HistoryHelper(int historySize)
         {
             undoStack = new InfinityStack<ImageReferenceKeeper>(historySize, null);
@@ -43,6 +44,15 @@ namespace PhotoEditor.HistoryProvider
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+        public void ReseizeStackSize(int newSize)
+        {
+            undoStack.Reseize(newSize);
+            redoStack.Reseize(newSize);
+        }
+        public int StackSize()
+        {
+            return undoStack.Size;
         }
         public bool CanUndo()
         {

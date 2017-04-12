@@ -389,6 +389,7 @@ namespace PhotoEditor.ImageOperations
             destinationImage.AddDirtyRect(new System.Windows.Int32Rect(0, 0, sourceImage.PixelWidth, sourceImage.PixelHeight));
             destinationImage.Unlock();
         }
+
         /// <summary>
         /// Sharpen filter, using source image to get image data, perform sharpen filter on it and copy modified data into destinationImage. 
         /// </summary>

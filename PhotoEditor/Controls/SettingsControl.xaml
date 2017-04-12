@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="PhotoEditor.Controls.SettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PhotoEditor.Controls"
+             MouseLeftButtonDown="WindowMouseLeftButtonDownClicked"
+             mc:Ignorable="d" 
+             d:DesignHeight="90" d:DesignWidth="300"
+             Background="{StaticResource DarkBackground}">
+    <Border Padding="5">
+        <StackPanel>
+            <Grid VerticalAlignment="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Foreground="{StaticResource FontColor}" Content="Size of history buffer:"/>
+                <TextBox Text="10" Width="30" Height="auto" Grid.Row="0" Grid.Column="1" x:Name="textBoxMaxHistoryBuffer" TextAlignment="Right" VerticalAlignment="Center" HorizontalAlignment="Center" TextChanged="TextBoxMaxHistoryChanged"/>
+            </Grid>
+            <StackPanel>
+                <Button x:Name="buttonOk" Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{DynamicResource FontColor}" Click="ButtonOkClicked"/>
+                <Button Content="Cancel" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonCancelClicked"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

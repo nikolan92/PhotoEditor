@@ -31,9 +31,14 @@
                     <ImageBrush ImageSource="MenuIcons/Redo-48.png" Stretch="Uniform"/>
                 </Button.Background>
             </Button>
-            <Button x:Name="btnColorChanell" Style="{StaticResource menuButton}" Margin="20,0,0,0" Click="ButtonShowHideChanellViewClicked">
+            <Button  Style="{StaticResource menuButton}" Margin="20,0,0,0" Click="ButtonSettingsClicked">
                 <Button.Background>
                     <ImageBrush ImageSource="MenuIcons/ChanellView-48.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
+            <Button Style="{StaticResource menuButton}" Margin="20,0,0,0" Click="ButtonSettingsClicked" HorizontalAlignment="Left">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/Settings-40.png" Stretch="Uniform"/>
                 </Button.Background>
             </Button>
         </StackPanel>
@@ -70,6 +75,17 @@
             <Label HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="{StaticResource FontColor}" FontSize="11" Margin="0,-9,0,0">
                 <Label.Content>
                     <AccessText TextWrapping="Wrap" Text="256 Colors" FontSize="10" TextAlignment="Center"/>
+                </Label.Content>
+            </Label>
+            <!--Pixelate button-->
+            <Button Style="{StaticResource menuButton}" Margin="0,9,0,0" Click="ButtonPixelateImageClicked" VerticalAlignment="Top" Width="40" Height="40" HorizontalAlignment="Center">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/Pixelate-48.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
+            <Label HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="{StaticResource FontColor}" FontSize="11" Margin="0,-9,0,0">
+                <Label.Content>
+                    <AccessText TextWrapping="Wrap" Text="Pixelate image" FontSize="10" TextAlignment="Center"/>
                 </Label.Content>
             </Label>
         </StackPanel>

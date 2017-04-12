@@ -64,6 +64,9 @@
     <Compile Include="Controls\ImageQuantizationControl.xaml.cs">
       <DependentUpon>ImageQuantizationControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SettingsControl.xaml.cs">
+      <DependentUpon>SettingsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SharpnControl.xaml.cs">
       <DependentUpon>SharpnControl.xaml</DependentUpon>
     </Compile>
@@ -73,6 +76,7 @@
     <Compile Include="ImageOperations\GammaFilter.cs" />
     <Compile Include="ImageOperations\ImageHistogram.cs" />
     <Compile Include="ImageOperations\ImageQuantization.cs" />
+    <Compile Include="ImageOperations\PixelateImage.cs" />
     <Compile Include="ImageOperations\ReseizeImage.cs" />
     <Compile Include="ImageOperations\SharpenFilter.cs" />
     <Compile Include="Utility\InfinityStack.cs" />
@@ -86,6 +90,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ImageQuantizationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -159,6 +167,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="MenuIcons\Histogram-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MenuIcons\Pixelate-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MenuIcons\Settings-40.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
