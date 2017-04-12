@@ -11,7 +11,7 @@
     <Border Padding="5">
         <StackPanel>
             <Label Foreground="{StaticResource FontColor}" Content="Pixel size" VerticalAlignment="Top" HorizontalAlignment="Center" HorizontalContentAlignment="Center"/>
-            <Slider x:Name="slider" Value="2" Minimum="2" Maximum="200" Thumb.DragCompleted="SliderCompleted" SmallChange="1" IsSnapToTickEnabled="True" TickPlacement="BottomRight" TickFrequency="1" SelectionEnd="9" IsHitTestVisible="True" RenderTransformOrigin="0.5,0.5" Margin="0,0,0,10"/>
+            <Slider x:Name="slider" Value="2" Minimum="2" Maximum="200" Thumb.DragCompleted="SliderCompleted" SmallChange="1" TickFrequency="1" SelectionEnd="113" IsHitTestVisible="True" RenderTransformOrigin="0.5,0.5" Margin="0,0,0,10" TickPlacement="BottomRight" SelectionStart="43" IsSnapToTickEnabled="True"/>
             <TextBox Text="{Binding ElementName=slider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Width="30" Height="auto" TextAlignment="Right" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             
             <Button x:Name="buttonOk" Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{DynamicResource FontColor}" Click="ButtonOkClicked"/>
