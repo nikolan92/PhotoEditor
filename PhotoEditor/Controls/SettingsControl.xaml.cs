@@ -44,7 +44,6 @@ namespace PhotoEditor.Controls
         {
             Window.GetWindow(this).Close();
         }
-
         private void TextBoxMaxHistoryChanged(object sender, TextChangedEventArgs e)
         {
 

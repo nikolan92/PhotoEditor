@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:PhotoEditor.Controls"
              MouseLeftButtonDown="WindowMouseLeftButtonDownClicked"
              mc:Ignorable="d" 
-             d:DesignHeight="90" d:DesignWidth="300"
+             d:DesignHeight="150" d:DesignWidth="300"
              Background="{StaticResource DarkBackground}">
     <Border Padding="5">
         <StackPanel>

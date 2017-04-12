@@ -64,6 +64,9 @@
     <Compile Include="Controls\ImageQuantizationControl.xaml.cs">
       <DependentUpon>ImageQuantizationControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PixelateImageControl.xaml.cs">
+      <DependentUpon>PixelateImageControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SettingsControl.xaml.cs">
       <DependentUpon>SettingsControl.xaml</DependentUpon>
     </Compile>
@@ -90,6 +93,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ImageQuantizationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PixelateImageControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

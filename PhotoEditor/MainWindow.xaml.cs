@@ -189,17 +189,17 @@ namespace PhotoEditor
         {
             if (viewLogic != null)
             {
-                Window gammaControl = new Window
+                Window imageQuantization = new Window
                 {
                     Content = new ImageQuantizationControl(viewLogic)
                 };
-                gammaControl.WindowStyle = WindowStyle.None;
-                gammaControl.AllowsTransparency = true;
-                gammaControl.Width = 300;
-                gammaControl.Height = 140;
-                gammaControl.Left = Left + 100;
-                gammaControl.Top = Top + 100;
-                gammaControl.ShowDialog();
+                imageQuantization.WindowStyle = WindowStyle.None;
+                imageQuantization.AllowsTransparency = true;
+                imageQuantization.Width = 300;
+                imageQuantization.Height = 140;
+                imageQuantization.Left = Left + 100;
+                imageQuantization.Top = Top + 100;
+                imageQuantization.ShowDialog();
 
                 UndoRedoButtonStatusChanged();
             }
@@ -233,27 +233,40 @@ namespace PhotoEditor
                 histogramViewIsOpen = false;
             }
         }
-
         private void ButtonPixelateImageClicked(object sender, RoutedEventArgs e)
         {
+            if (viewLogic != null)
+            {
+                Window pixelateImageControl = new Window
+                {
+                    Content = new PixelateImageControl(viewLogic)
+                };
+                pixelateImageControl.WindowStyle = WindowStyle.None;
+                pixelateImageControl.AllowsTransparency = true;
+                pixelateImageControl.Width = 300;
+                pixelateImageControl.Height = 150;
+                pixelateImageControl.Left = Left + 100;
+                pixelateImageControl.Top = Top + 100;
+                pixelateImageControl.ShowDialog();
 
+                UndoRedoButtonStatusChanged();
+            }
         }
-
         private void ButtonSettingsClicked(object sender, RoutedEventArgs e)
         {
             if (viewLogic != null)
             {
-                Window gammaControl = new Window
+                Window settingsControl = new Window
                 {
                     Content = new SettingsControl(histortHelper)
                 };
-                gammaControl.WindowStyle = WindowStyle.None;
-                gammaControl.AllowsTransparency = true;
-                gammaControl.Width = 300;
-                gammaControl.Height = 90;
-                gammaControl.Left = Left + 100;
-                gammaControl.Top = Top + 100;
-                gammaControl.ShowDialog();
+                settingsControl.WindowStyle = WindowStyle.None;
+                settingsControl.AllowsTransparency = true;
+                settingsControl.Width = 300;
+                settingsControl.Height = 90;
+                settingsControl.Left = Left + 100;
+                settingsControl.Top = Top + 100;
+                settingsControl.ShowDialog();
 
                 UndoRedoButtonStatusChanged();
             }

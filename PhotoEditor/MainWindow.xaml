@@ -31,7 +31,7 @@
                     <ImageBrush ImageSource="MenuIcons/Redo-48.png" Stretch="Uniform"/>
                 </Button.Background>
             </Button>
-            <Button  Style="{StaticResource menuButton}" Margin="20,0,0,0" Click="ButtonSettingsClicked">
+            <Button  Style="{StaticResource menuButton}" Margin="20,0,0,0" Click="ButtonShowHideChanellViewClicked">
                 <Button.Background>
                     <ImageBrush ImageSource="MenuIcons/ChanellView-48.png" Stretch="Uniform"/>
                 </Button.Background>
