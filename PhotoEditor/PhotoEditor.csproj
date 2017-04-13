@@ -76,6 +76,7 @@
     <Compile Include="DataModel\ImageHistogramModel.cs" />
     <Compile Include="DataModel\ImageInfoModel.cs" />
     <Compile Include="HistoryProvider\ImageKeeper.cs" />
+    <Compile Include="ImageOperations\EdgeEnhenceFilter.cs" />
     <Compile Include="ImageOperations\GammaFilter.cs" />
     <Compile Include="ImageOperations\ImageHistogram.cs" />
     <Compile Include="ImageOperations\ImageQuantization.cs" />
@@ -180,6 +181,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="MenuIcons\Settings-40.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MenuIcons\Edge-48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -29,7 +29,6 @@ namespace PhotoEditor
         {
             ViewWithChanell,ViewWithoutChanell,ViewWithHistogram
         }
-        //private Stopwatch sw = new Stopwatch();
         public MainWindow()
         {
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -270,6 +269,17 @@ namespace PhotoEditor
 
                 UndoRedoButtonStatusChanged();
             }
+        }
+
+        private void ButtonEdgeEnhanceClicked(object sender, RoutedEventArgs e)
+        {
+            if (viewLogic == null)
+                return;
+            WriteableBitmap tmp = viewLogic.MainImage.Image.Clone();
+            viewLogic.AddImageReference(new ImageModel(tmp));
+            EdgeEnhenceFilter.EdgeEnhenceUnsafeWithCopy(tmp, viewLogic.MainImage.Image, 15);
+            viewLogic.RefreshView();
+            UndoRedoButtonStatusChanged();
         }
     }
 }
