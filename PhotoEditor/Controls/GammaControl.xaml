@@ -8,22 +8,20 @@
              MouseLeftButtonDown="WindowMouseLeftButtonDownClicked"
              d:DesignHeight="135" d:DesignWidth="300"
              Background="{StaticResource DarkBackground}">
-    <DockPanel LastChildFill="True">
-        <!--Gamma filter-->
-        <Border Padding="5">
-            <StackPanel>
-                <Label Foreground="{StaticResource FontColor}" Content="Gamma" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <DockPanel LastChildFill="True">
-                    <Button DockPanel.Dock="Left" Width="15" Content="-" Background="#FF1F1F1F" Margin="3,0,0,0" Foreground="{StaticResource FontColor}" Click="ButtonMinusClicked"/>
-                    <Button DockPanel.Dock="Right" Width="15" Content="+" Background="#FF1F1F1F" Margin="0,0,3,0" Foreground="{StaticResource FontColor}" Click="ButtonPlusClicked"/>
-                    <Slider x:Name="slider" Value="1.0"  Minimum="0.05" Maximum="7.0" Thumb.DragCompleted="SliderCompleted" SmallChange="0" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
-                </DockPanel>
-                <TextBox Foreground="{StaticResource FontColor}" Width="30" Text="{Binding ElementName=slider,Path=Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Right"/>
-                <Button Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonOkClicked"/>
-                <Button Content="Cancel" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonCancelClicked"/>
-            </StackPanel>
-        </Border>
-    </DockPanel>
+    
+    <Border Padding="5">
+        <StackPanel>
+            <Label Foreground="{StaticResource FontColor}" Content="Gamma" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <DockPanel LastChildFill="True">
+                <Button DockPanel.Dock="Left" Width="15" Content="-" Background="#FF1F1F1F" Margin="3,0,0,0" Foreground="{StaticResource FontColor}" Click="ButtonMinusClicked"/>
+                <Button DockPanel.Dock="Right" Width="15" Content="+" Background="#FF1F1F1F" Margin="0,0,3,0" Foreground="{StaticResource FontColor}" Click="ButtonPlusClicked"/>
+                <Slider x:Name="slider" Value="1.0"  Minimum="0.05" Maximum="7.0" Thumb.DragCompleted="SliderCompleted" SmallChange="0" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
+            </DockPanel>
+            <TextBox Foreground="{StaticResource FontColor}" Width="30" Text="{Binding ElementName=slider,Path=Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Right"/>
+            <Button Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonOkClicked"/>
+            <Button Content="Cancel" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonCancelClicked"/>
+        </StackPanel>
+    </Border>
 </UserControl>
 
 

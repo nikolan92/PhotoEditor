@@ -277,9 +277,29 @@ namespace PhotoEditor
                 return;
             WriteableBitmap tmp = viewLogic.MainImage.Image.Clone();
             viewLogic.AddImageReference(new ImageModel(tmp));
-            EdgeEnhenceFilter.EdgeEnhenceUnsafeWithCopy(tmp, viewLogic.MainImage.Image, 15);
+            EdgeEnhenceFilter.EdgeEnhenceUnsafeWithCopy(tmp, viewLogic.MainImage.Image, 100);
             viewLogic.RefreshView();
             UndoRedoButtonStatusChanged();
+        }
+
+        private void ButtonChannelHistogramClicked(object sender, RoutedEventArgs e)
+        {
+            if (viewLogic != null)
+            {
+                Window channelHistogramControl = new Window
+                {
+                    Content = new ChannelHistogramControl(viewLogic)
+                };
+                channelHistogramControl.WindowStyle = WindowStyle.None;
+                channelHistogramControl.AllowsTransparency = true;
+                channelHistogramControl.Width = 300;
+                channelHistogramControl.Height = 135;
+                channelHistogramControl.Left = Left + 100;
+                channelHistogramControl.Top = Top + 100;
+                channelHistogramControl.ShowDialog();
+
+                UndoRedoButtonStatusChanged();
+            }
         }
     }
 }

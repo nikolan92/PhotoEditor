@@ -58,8 +58,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\ChannelHistogramControl.xaml.cs">
+      <DependentUpon>ChannelHistogramControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\GammaControl.xaml.cs">
       <DependentUpon>GammaControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\HelperControls\RangeSliderControl.xaml.cs">
+      <DependentUpon>RangeSliderControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ImageQuantizationControl.xaml.cs">
       <DependentUpon>ImageQuantizationControl.xaml</DependentUpon>
@@ -76,6 +82,7 @@
     <Compile Include="DataModel\ImageHistogramModel.cs" />
     <Compile Include="DataModel\ImageInfoModel.cs" />
     <Compile Include="HistoryProvider\ImageKeeper.cs" />
+    <Compile Include="ImageOperations\ChannelHistogramFilter.cs" />
     <Compile Include="ImageOperations\EdgeEnhenceFilter.cs" />
     <Compile Include="ImageOperations\GammaFilter.cs" />
     <Compile Include="ImageOperations\ImageHistogram.cs" />
@@ -89,7 +96,15 @@
     <Compile Include="ViewModel\ViewWithChanell.cs" />
     <Compile Include="ViewModel\ViewWithHistogram.cs" />
     <Compile Include="ViewModel\ViewWithoutChanell.cs" />
+    <Page Include="Controls\ChannelHistogramControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\GammaControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\HelperControls\RangeSliderControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -184,6 +199,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="MenuIcons\Edge-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MenuIcons\Channel-Histogram-50.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

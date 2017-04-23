@@ -88,6 +88,7 @@
                     <AccessText TextWrapping="Wrap" Text="Pixelate image" FontSize="10" TextAlignment="Center"/>
                 </Label.Content>
             </Label>
+            <!--Edge enhence-->
             <Button Style="{StaticResource menuButton}" Margin="0,9,0,0" Click="ButtonEdgeEnhanceClicked" VerticalAlignment="Top" Width="40" Height="40" HorizontalAlignment="Center">
                 <Button.Background>
                     <ImageBrush ImageSource="MenuIcons/Edge-48.png" Stretch="Uniform"/>
@@ -96,6 +97,17 @@
             <Label HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="{StaticResource FontColor}" FontSize="11" Margin="0,-9,0,0">
                 <Label.Content>
                     <AccessText TextWrapping="Wrap" Text="Edge Enhance" FontSize="10" TextAlignment="Center"/>
+                </Label.Content>
+            </Label>
+            <!--Channel histogram-->
+            <Button Style="{StaticResource menuButton}" Margin="0,9,0,0" Click="ButtonChannelHistogramClicked" VerticalAlignment="Top" Width="40" Height="40" HorizontalAlignment="Center">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/Channel-Histogram-50.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
+            <Label HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="{StaticResource FontColor}" FontSize="11" Margin="0,-9,0,0">
+                <Label.Content>
+                    <AccessText TextWrapping="Wrap" Text="Channel Histogram" FontSize="9" TextAlignment="Center"/>
                 </Label.Content>
             </Label>
         </StackPanel>
