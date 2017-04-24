@@ -21,6 +21,11 @@
                     <ImageBrush ImageSource="MenuIcons/Save-48.png" Stretch="Uniform"/>
                 </Button.Background>
             </Button>
+            <Button Style="{StaticResource menuButton}" Margin="10,0,0,0" Click="ButtonAdvancedSaveClicked" HorizontalAlignment="Left">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/Downsample-48.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
             <Button x:Name="btnUndo" Style="{StaticResource menuButton}" Margin="20,0,0,0" Click="ButtonUndoClicked" IsEnabled="False">
                 <Button.Background>
                     <ImageBrush ImageSource="MenuIcons/Undo-48.png" Stretch="Uniform"/>

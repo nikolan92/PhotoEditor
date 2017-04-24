@@ -73,6 +73,9 @@
     <Compile Include="Controls\PixelateImageControl.xaml.cs">
       <DependentUpon>PixelateImageControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SaveControl.xaml.cs">
+      <DependentUpon>SaveControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\SettingsControl.xaml.cs">
       <DependentUpon>SettingsControl.xaml</DependentUpon>
     </Compile>
@@ -90,8 +93,10 @@
     <Compile Include="ImageOperations\PixelateImage.cs" />
     <Compile Include="ImageOperations\ReseizeImage.cs" />
     <Compile Include="ImageOperations\SharpenFilter.cs" />
+    <Compile Include="Utility\DownsamplingImage.cs" />
     <Compile Include="Utility\InfinityStack.cs" />
     <Compile Include="Utility\LoadAndSaveHelper.cs" />
+    <Compile Include="Utility\ShannonFano.cs" />
     <Compile Include="ViewModel\ViewLogic.cs" />
     <Compile Include="ViewModel\ViewWithChanell.cs" />
     <Compile Include="ViewModel\ViewWithHistogram.cs" />
@@ -113,6 +118,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\PixelateImageControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SaveControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -202,6 +211,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="MenuIcons\Channel-Histogram-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MenuIcons\Downsample-48.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

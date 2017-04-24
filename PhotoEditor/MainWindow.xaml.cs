@@ -116,36 +116,6 @@ namespace PhotoEditor
             viewLogic.Redo();
             UndoRedoButtonStatusChanged();
         }
-        private void UndoRedoButtonStatusChanged()
-        {
-            if (histortHelper.CanUndo())
-                btnUndo.IsEnabled = true;
-            else
-                btnUndo.IsEnabled = false;
-
-            if (histortHelper.CanRedo())
-                btnRedo.IsEnabled = true;
-            else
-                btnRedo.IsEnabled = false;
-        }
-        private void ChangeView(ViewModel view)
-        {
-            switch (view)
-            {
-                case ViewModel.ViewWithChanell:
-                    viewLogic = new ViewWithChanell(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
-                    DataContext = viewLogic;
-                    break;
-                case ViewModel.ViewWithoutChanell:
-                    viewLogic = new ViewWithoutChanell(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
-                    DataContext = viewLogic;
-                    break;
-                case ViewModel.ViewWithHistogram:
-                    viewLogic = new ViewWithHistogram(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
-                    DataContext = viewLogic;
-                    break;
-            }
-        }
         private void ButtonSharpnessClicked(object sender, RoutedEventArgs e)
         {
             if (viewLogic != null)
@@ -270,7 +240,6 @@ namespace PhotoEditor
                 UndoRedoButtonStatusChanged();
             }
         }
-
         private void ButtonEdgeEnhanceClicked(object sender, RoutedEventArgs e)
         {
             if (viewLogic == null)
@@ -281,7 +250,6 @@ namespace PhotoEditor
             viewLogic.RefreshView();
             UndoRedoButtonStatusChanged();
         }
-
         private void ButtonChannelHistogramClicked(object sender, RoutedEventArgs e)
         {
             if (viewLogic != null)
@@ -299,6 +267,54 @@ namespace PhotoEditor
                 channelHistogramControl.ShowDialog();
 
                 UndoRedoButtonStatusChanged();
+            }
+        }
+        private void ButtonAdvancedSaveClicked(object sender, RoutedEventArgs e)
+        {
+            if (viewLogic != null)
+            {
+                Window saveControl = new Window
+                {
+                    Content = new SaveControl(viewLogic, loadAndSaveHelper)
+                };
+                saveControl.WindowStyle = WindowStyle.None;
+                saveControl.AllowsTransparency = true;
+                saveControl.Width = 300;
+                saveControl.Height = 170;
+                saveControl.Left = Left + 100;
+                saveControl.Top = Top + 100;
+                saveControl.ShowDialog();
+            }
+        }
+
+        private void UndoRedoButtonStatusChanged()
+        {
+            if (histortHelper.CanUndo())
+                btnUndo.IsEnabled = true;
+            else
+                btnUndo.IsEnabled = false;
+
+            if (histortHelper.CanRedo())
+                btnRedo.IsEnabled = true;
+            else
+                btnRedo.IsEnabled = false;
+        }
+        private void ChangeView(ViewModel view)
+        {
+            switch (view)
+            {
+                case ViewModel.ViewWithChanell:
+                    viewLogic = new ViewWithChanell(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
+                    DataContext = viewLogic;
+                    break;
+                case ViewModel.ViewWithoutChanell:
+                    viewLogic = new ViewWithoutChanell(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
+                    DataContext = viewLogic;
+                    break;
+                case ViewModel.ViewWithHistogram:
+                    viewLogic = new ViewWithHistogram(viewLogic.MainImage.Image, histortHelper, loadAndSaveHelper.LastUsedFileName);
+                    DataContext = viewLogic;
+                    break;
             }
         }
     }

@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="PhotoEditor.Controls.SaveControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             MouseLeftButtonDown="WindowMouseLeftButtonDownClicked"
+             xmlns:local="clr-namespace:PhotoEditor.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="170" d:DesignWidth="300" Background="{StaticResource DarkBackground}">
+    <Border Padding="5">
+        <StackPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="DownSampling" Grid.ColumnSpan="2" Foreground="{StaticResource FontColor}" HorizontalContentAlignment="Center"></Label>
+                <Label Content="Red" Grid.Row="1" Foreground="{StaticResource FontColor}"/>
+                <Label Content="Green" Grid.Row="2" Foreground="{StaticResource FontColor}"/>
+                <Label Content="Blue" Grid.Row="3" Foreground="{StaticResource FontColor}"/>
+                <RadioButton x:Name="radioButtonRed" GroupName="radioButtonGroup" IsChecked="True" Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+                <RadioButton x:Name="radioButtonGreen" GroupName="radioButtonGroup" Grid.Row="2" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+                <RadioButton x:Name="radioButtonBlue" GroupName="radioButtonGroup" Grid.Row="3" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+            </Grid>
+            <StackPanel>
+                <Button Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonOkClicked"/>
+                <Button Content="Cancel" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonCancelClicked"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

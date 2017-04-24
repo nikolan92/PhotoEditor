@@ -34,19 +34,28 @@ namespace PhotoEditor.Utility
         public WriteableBitmap LoadImage()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image files(*.bmp *.jpeg *.png)|*.bmp; *.png; *.jpeg; *.jpg;";
+            openFileDialog.Filter = "Image files(*.bmp *.jpeg *.png *.nn)|*.bmp; *.png; *.jpeg; *.jpg; *.nn";
             openFileDialog.InitialDirectory = LastUsedPath;
             if (openFileDialog.ShowDialog().Equals(true))
             {
                 //Change lastUsedPath to the new one
                 LastUsedPath = Path.GetDirectoryName(openFileDialog.FileName);
                 LastUsedFileName = Path.GetFileName(openFileDialog.FileName);
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.UriSource = new Uri(openFileDialog.FileName);
-                bitmapImage.EndInit();
 
-                return new WriteableBitmap(bitmapImage);
+                if (openFileDialog.FilterIndex == 5)//Custom Image
+                {
+                    return null;
+                }
+                else
+                {
+                    BitmapImage bitmapImage = new BitmapImage();
+                    
+                    bitmapImage.BeginInit();
+                    bitmapImage.UriSource = new Uri(openFileDialog.FileName);
+                    bitmapImage.EndInit();
+                    return new WriteableBitmap(bitmapImage);
+                }
+                
             }
             return null;
         }
@@ -93,6 +102,15 @@ namespace PhotoEditor.Utility
                     encoder.Save(fs);
                 }
             }
+        }
+
+        private byte[] LoadImageAsByteArray(string path)
+        {
+            return System.IO.File.ReadAllBytes(path);
+        }
+        public void SaveImageAsByteArray(byte[] image)
+        {
+            
         }
     }
 }
