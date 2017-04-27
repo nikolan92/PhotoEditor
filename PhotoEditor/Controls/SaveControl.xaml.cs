@@ -42,8 +42,11 @@ namespace PhotoEditor.Controls
             else
                 downsapledImage = new DownsampledImage(viewLogic.MainImage.Image, DownsampledImage.SpareChannel.Blue);
 
-            viewLogic.MainImage.Image = downsapledImage.Image;
-            //Window.GetWindow(this).Close();
+            ShannonFano.Compress(downsapledImage.ImageData);
+
+            loadAndSaveHelper.SaveCustomImage(downsapledImage.ImageData);
+            //viewLogic.MainImage.Image = downsapledImage.Image;
+            Window.GetWindow(this).Close();
         }
 
         private void ButtonCancelClicked(object sender, RoutedEventArgs e)

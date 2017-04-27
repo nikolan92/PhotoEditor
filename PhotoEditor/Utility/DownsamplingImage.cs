@@ -95,6 +95,7 @@ namespace PhotoEditor.Utility
             ImageData = imageInBytes;
             UpSampleImage();
         }
+
         private unsafe void DownSampleImage(WriteableBitmap image)
         {
             image.Lock();
@@ -226,6 +227,8 @@ namespace PhotoEditor.Utility
                     SparedChannel = SpareChannel.Green;
                 else
                     SparedChannel = SpareChannel.Blue;
+
+                DownSampledWidth = (int)Math.Ceiling((double)Width / 2.0);
                 //
                 //Create new image based on imageData information.
                 image = new WriteableBitmap(Width, Height, 96, 96, System.Windows.Media.PixelFormats.Rgb24, null);

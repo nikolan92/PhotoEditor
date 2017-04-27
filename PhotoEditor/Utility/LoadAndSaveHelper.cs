@@ -42,9 +42,14 @@ namespace PhotoEditor.Utility
                 LastUsedPath = Path.GetDirectoryName(openFileDialog.FileName);
                 LastUsedFileName = Path.GetFileName(openFileDialog.FileName);
 
-                if (openFileDialog.FilterIndex == 5)//Custom Image
+                string extension = Path.GetExtension(openFileDialog.FileName);
+                if (extension.Equals(".nn"))//Custom Image
                 {
-                    return null;
+                    byte[] imageInBytes = LoadImageAsByteArray(openFileDialog.FileName);
+
+                    DownsampledImage ds = new DownsampledImage(imageInBytes);
+
+                    return ds.Image;
                 }
                 else
                 {
@@ -104,13 +109,33 @@ namespace PhotoEditor.Utility
             }
         }
 
+        public void SaveCustomImage(byte[] imageInBytes)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "MyFormat(*.nn) | *.nn";
+
+            saveFileDialog.InitialDirectory = LastUsedPath;
+            if (saveFileDialog.ShowDialog().Equals(true))
+            {
+                //Change lastUsedPath to the new one
+                LastUsedPath = Path.GetDirectoryName(saveFileDialog.FileName);
+
+                string path = Path.GetDirectoryName(saveFileDialog.FileName);
+                string fileName = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);
+
+                string finalFilePath = path + "\\" + fileName + ".nn";
+
+                SaveImageAsByteArray(finalFilePath, imageInBytes);
+            }
+        }
+
         private byte[] LoadImageAsByteArray(string path)
         {
             return System.IO.File.ReadAllBytes(path);
         }
-        public void SaveImageAsByteArray(byte[] image)
+        public void SaveImageAsByteArray(string path, byte[] image)
         {
-            
+            File.WriteAllBytes(path, image);
         }
     }
 }
