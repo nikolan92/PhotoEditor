@@ -19,7 +19,10 @@ namespace PhotoEditor.Utility
 
     public class ShannonFano
     {
-        
+        private static int bitIndex;
+        private static int byteIndex;
+        private static int byteBuffer;
+
         /// <summary>
         /// Compress passed data.
         /// </summary>
@@ -27,24 +30,44 @@ namespace PhotoEditor.Utility
         /// <returns>Compressed data.</returns>
         public static byte[] Compress(byte[] data)
         {
-            string s = "ABRACADABRA";
-            //data = Encoding.ASCII.GetBytes(s);
+            
+            bitIndex = byteIndex = byteBuffer = 0;
 
-            TableItem[]freqTable = CreateFrequencyTableAndSort(data);
+            TableItem[] freqTable = CreateFrequencyTableAndSort(data);
             freqTable = RemoveUnusedValues(freqTable);
 
             CreateBinaryTree(freqTable, "", 0, freqTable.Length-1);
 
-            int newLen =0;
-            for(int i = 0; i < freqTable.Length; i++)
+            //Create code table for compress.
+            string[] codeTable = new string[256];
+
+            for (int i = 0; i < freqTable.Length; i++)
             {
-                newLen += freqTable[i].occurrence * freqTable[i].code.Length;
+                codeTable[freqTable[i].value] = freqTable[i].code;
             }
 
-            //Dictionary<byte, string> codes = new Dictionary<byte, string>(256);
-            //double
-            return null;
+            //Callculate new Length.
+            int newLength = 0;
+            for(int i = 0; i < freqTable.Length; i++)
+            {
+                newLength += freqTable[i].occurrence * freqTable[i].code.Length;
+            }
+            //Round to the biggest number after division.
+            newLength = (int)Math.Ceiling((double)newLength / 8);
+            
+            byte[] compressedData = new byte[newLength];
+
+            //Compress data
+            for (int i = 0; i < data.Length; i++)
+            {
+                WriteBitInByte(compressedData, codeTable[data[i]]);
+            }
+            //Write last byte for any case, maybe buffer is not full and in that case it wil not copy with function WriteBitInByte.
+            compressedData[newLength - 1] = (byte)byteBuffer;
+
+            return compressedData;
         }
+
 
         /// <summary>
         /// Dompress passed data.
@@ -55,8 +78,50 @@ namespace PhotoEditor.Utility
         {
             return null;
         }
+        /// <summary>
+        /// This function write string code in final compress data, and take care about overflow in string code.
+        /// <para>If string code contains 12 bits, then this function will write first 8 bits in one byte and that byte in final copress data and increment byteIndex.</para> 
+        /// <para>Other 4 bits will stay in buffer until its filled,
+        /// when byteBuffer is full it will be copy in final compress data and increment byteIndex.</para>
+        /// </summary>
+        /// <param name="data">Final compress data.</param>
+        /// <param name="code">String code.</param>
+        private static void WriteBitInByte(byte[] data, string code)
+        {
+            char[] bits = code.ToCharArray();
 
+            for (int i = 0; i < bits.Length; i++)
+            {
+                if (bitIndex != 7)
+                {
+                    if (bits[i].Equals('0'))
+                        byteBuffer = byteBuffer << 1;
+                    else
+                        byteBuffer = (byteBuffer << 1) | 1;
+                    bitIndex++;
+                }
+                else
+                {
+                    if (bits[i].Equals('0'))
+                        byteBuffer = byteBuffer << 1;
+                    else
+                        byteBuffer = (byteBuffer << 1) | 1;
 
+                    data[byteIndex] = (byte)byteBuffer;
+                    byteIndex++;
+                    bitIndex = 0;
+                    byteBuffer = 0;
+                }
+            }
+
+        }
+        /// <summary>
+        /// This function create binary tree by Shannon-Pano algorithm.
+        /// </summary>
+        /// <param name="freqTable">Sorted frequency table.</param>
+        /// <param name="codes">Initial code is empty string.</param>
+        /// <param name="minIndex">Inital index is zero.</param>
+        /// <param name="maxIndex">Initial index is frequency table length - 1.</param>
         private static void CreateBinaryTree(TableItem[] freqTable, string codes, int minIndex, int maxIndex)
         {
             int splitPoint = CalculateSplitPoint(freqTable, minIndex, maxIndex);
@@ -70,13 +135,11 @@ namespace PhotoEditor.Utility
             {
                 freqTable[minIndex].code = codes + "0";
                 freqTable[maxIndex].code = codes + "1";
-                //codes = "";
                 return;
             }
             else
             {
                 freqTable[minIndex].code = codes;
-                codes = "";
                 return;
             }
 
@@ -99,7 +162,7 @@ namespace PhotoEditor.Utility
             {
                 max += freqTable[i].occurrence;
                 split++;
-                if (max >= totalProbablility / 3) //Half of the total freq is used, stop.
+                if (max >= totalProbablility / 2) //Half of the total freq is used, stop.
                     break;
             }
             return split;
@@ -201,6 +264,12 @@ namespace PhotoEditor.Utility
             {
                 this.occurrence = occurrence;
                 this.value = value;
+            }
+            public TableItem(int occurrence, byte value,string code)
+            {
+                this.occurrence = occurrence;
+                this.value = value;
+                this.code = code;
             }
         }
     }

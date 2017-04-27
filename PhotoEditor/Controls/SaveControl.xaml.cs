@@ -2,6 +2,7 @@
 using PhotoEditor.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,11 +43,18 @@ namespace PhotoEditor.Controls
             else
                 downsapledImage = new DownsampledImage(viewLogic.MainImage.Image, DownsampledImage.SpareChannel.Blue);
 
-            ShannonFano.Compress(downsapledImage.ImageData);
 
-            loadAndSaveHelper.SaveCustomImage(downsapledImage.ImageData);
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            byte[] compressImage = ShannonFano.Compress(downsapledImage.ImageData);
+            sw.Stop();
+
+            Console.WriteLine("Sannon Fano:"+sw.ElapsedMilliseconds + "ms");
+
+            //loadAndSaveHelper.SaveCustomImage(compressImage);
+            //loadAndSaveHelper.SaveCustomImage(downsapledImage.ImageData);
             //viewLogic.MainImage.Image = downsapledImage.Image;
-            Window.GetWindow(this).Close();
+            //Window.GetWindow(this).Close();
         }
 
         private void ButtonCancelClicked(object sender, RoutedEventArgs e)
