@@ -36,10 +36,10 @@ namespace PhotoEditor
             loadAndSaveHelper = new LoadAndSaveHelper();
         }
 
-        private void ButtonOpenClicked(object sender, RoutedEventArgs e)
+        private async void ButtonOpenClicked(object sender, RoutedEventArgs e)
         {
-            WriteableBitmap image = loadAndSaveHelper.LoadImage();
-            if(image!= null)
+            WriteableBitmap image = await loadAndSaveHelper.LoadImageAsync();
+            if (image != null)
             {
                 histortHelper = new HistoryHelper(10);
                 if (!chanellViewIsOpen)

@@ -31,10 +31,10 @@ namespace PhotoEditor.Utility
             LastUsedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
         }
 
-        public WriteableBitmap LoadImage()
+        public async Task<WriteableBitmap> LoadImageAsync()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image files(*.bmp *.jpeg *.png *.nn)|*.bmp; *.png; *.jpeg; *.jpg; *.nn";
+            openFileDialog.Filter = "Image files(*.bmp *.jpeg *.png *.sf)|*.bmp; *.png; *.jpeg; *.jpg; *.sf";
             openFileDialog.InitialDirectory = LastUsedPath;
             if (openFileDialog.ShowDialog().Equals(true))
             {
@@ -43,10 +43,13 @@ namespace PhotoEditor.Utility
                 LastUsedFileName = Path.GetFileName(openFileDialog.FileName);
 
                 string extension = Path.GetExtension(openFileDialog.FileName);
-                if (extension.Equals(".nn"))//Custom Image
+                if (extension.Equals(".sf"))//Custom Image
                 {
+                    //This is compress data.
                     byte[] imageInBytes = LoadImageAsByteArray(openFileDialog.FileName);
 
+                    ShannonFano sannonFano = new ShannonFano();
+                    imageInBytes = await sannonFano.DecomressAsync(imageInBytes);
                     DownsampledImage ds = new DownsampledImage(imageInBytes);
 
                     return ds.Image;
@@ -54,13 +57,13 @@ namespace PhotoEditor.Utility
                 else
                 {
                     BitmapImage bitmapImage = new BitmapImage();
-                    
+
                     bitmapImage.BeginInit();
                     bitmapImage.UriSource = new Uri(openFileDialog.FileName);
                     bitmapImage.EndInit();
                     return new WriteableBitmap(bitmapImage);
                 }
-                
+
             }
             return null;
         }
@@ -112,7 +115,7 @@ namespace PhotoEditor.Utility
         public void SaveCustomImage(byte[] imageInBytes)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "MyFormat(*.nn) | *.nn";
+            saveFileDialog.Filter = "MyFormat(*.sf) | *.sf";
 
             saveFileDialog.InitialDirectory = LastUsedPath;
             if (saveFileDialog.ShowDialog().Equals(true))
@@ -123,7 +126,7 @@ namespace PhotoEditor.Utility
                 string path = Path.GetDirectoryName(saveFileDialog.FileName);
                 string fileName = Path.GetFileNameWithoutExtension(saveFileDialog.FileName);
 
-                string finalFilePath = path + "\\" + fileName + ".nn";
+                string finalFilePath = path + "\\" + fileName + ".sf";
 
                 SaveImageAsByteArray(finalFilePath, imageInBytes);
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,16 +41,24 @@ namespace PhotoEditor.Utility
         {
             bitPosition = bytePosition = byteBuffer = 0;
         }
-
+        /// <summary>
+        /// Compress passed data, async method.
+        /// </summary>
+        /// <param name="data">Data for compressing.</param>
+        /// <param name="progress">Object for updating UI. See <see cref="Progress{T}"/> for more.</param>
+        /// <returns>Compress data.</returns>
         public Task<byte[]> CompressAsync(byte[] data, IProgress<string> progress)
         {
             return Task.Run(() =>
             {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
                 progress.Report("Creating frequency table.");
                 TableItem[] freqTable = CreateFrequencyTableAndSort(data);
                 freqTable = RemoveUnusedValues(freqTable);
 
-                progress.Report("Creating binary tree.");
+                progress.Report("Creating code table.");
                 CreateCodeTableForCompress(freqTable, "", 0, freqTable.Length - 1);
 
                 //Create code table for compress.
@@ -60,27 +69,189 @@ namespace PhotoEditor.Utility
                     codeTable[freqTable[i].value] = freqTable[i].code;
                 }
 
-                //Callculate new Length.
-                int newLength = 0;
+                //Compress data length.
+                int newDataLength = 0;
+                //Length of data that teling how to reconstruct binary tree.
+                int headerLength = 6; //6  reserve data for lengths. See above.
+                                      //Callculate new data Length.
                 for (int i = 0; i < freqTable.Length; i++)
                 {
-                    newLength += freqTable[i].occurrence * freqTable[i].code.Length;
+                    //bytes needed for compressed data.
+                    newDataLength += freqTable[i].occurrence * freqTable[i].code.Length;
+                    //bytes needed for header part. If code.length is equal 7 then 1B is needed, if 12 then 2B is needed for storing code and so on.
+                    headerLength += (int)Math.Ceiling((double)freqTable[i].code.Length / 8);
                 }
-                //Round to the biggest number after division.
-                newLength = (int)Math.Ceiling((double)newLength / 8);
+                //Plus bytes needed per code for storing code length and original value.
+                headerLength += freqTable.Length * 2;
 
-                byte[] compressedData = new byte[newLength];
+                //Round to the biggest number after division with 8, because we sum bits length and we need to round to the bigger number. 
+                newDataLength = (int)Math.Ceiling((double)newDataLength / 8);
 
-                progress.Report("Compressing data.");
-                //Compress data
+                //Create new data array with final length.
+                byte[] compressedData = new byte[headerLength + newDataLength];
+
+                //Remember old dataLength.
+                lenghtOfUncompressData = data.Length;
+                //Write header info.
+                WriteHeader(compressedData, freqTable);
+
+                progress.Report("Comressing data.");
+                //Compress data.
                 for (int i = 0; i < data.Length; i++)
                 {
                     WriteBitsInByte(compressedData, codeTable[data[i]]);
                 }
                 //Write last byte for any case, maybe buffer is not full and in that case it wil not copy with function WriteBitInByte.
-                compressedData[newLength - 1] = (byte)byteBuffer;
+                //Also we need to align bits to be BigEndian for decompress 
+                //Exemple: is we code las byte to be 000101 and our code is just 101 then we must shift byteBuffer for 3 space left.
+                //Final result will be 101000, this is important because we later read data for decompress from left to right.
+
+                // We need to check last writen bitPosition and substract with 8 to get how much position we need to shift.
+                int shift = 8 - bitPosition;
+                compressedData[(headerLength + newDataLength) - 1] = (byte)(byteBuffer << shift);
+
+                //Reset buffer.
+                byteBuffer = 0;
+
+                //Stop stopwatch.
+                sw.Stop();
+                progress.Report("Data compression finish in:" + sw.ElapsedMilliseconds + "ms");
 
                 return compressedData;
+            });
+        }
+        /// <summary>
+        /// Compress passed data, async method.
+        /// </summary>
+        /// <param name="data">Data for compressing.</param>
+        /// <returns>Compress data.</returns>
+        public Task<byte[]> CompressAsync(byte[] data)
+        {
+            return Task.Run(() =>
+            {
+                TableItem[] freqTable = CreateFrequencyTableAndSort(data);
+                freqTable = RemoveUnusedValues(freqTable);
+
+                CreateCodeTableForCompress(freqTable, "", 0, freqTable.Length - 1);
+
+                //Create code table for compress.
+                string[] codeTable = new string[256];
+
+                for (int i = 0; i < freqTable.Length; i++)
+                {
+                    codeTable[freqTable[i].value] = freqTable[i].code;
+                }
+
+                //Compress data length.
+                int newDataLength = 0;
+                //Length of data that teling how to reconstruct binary tree.
+                int headerLength = 6; //6  reserve data for lengths. See above.
+                                      //Callculate new data Length.
+                for (int i = 0; i < freqTable.Length; i++)
+                {
+                    //bytes needed for compressed data.
+                    newDataLength += freqTable[i].occurrence * freqTable[i].code.Length;
+                    //bytes needed for header part. If code.length is equal 7 then 1B is needed, if 12 then 2B is needed for storing code and so on.
+                    headerLength += (int)Math.Ceiling((double)freqTable[i].code.Length / 8);
+                }
+                //Plus bytes needed per code for storing code length and original value.
+                headerLength += freqTable.Length * 2;
+
+                //Round to the biggest number after division with 8, because we sum bits length and we need to round to the bigger number. 
+                newDataLength = (int)Math.Ceiling((double)newDataLength / 8);
+
+                //Create new data array with final length.
+                byte[] compressedData = new byte[headerLength + newDataLength];
+
+                //Remember old dataLength.
+                lenghtOfUncompressData = data.Length;
+                //Write header info.
+                WriteHeader(compressedData, freqTable);
+                //Compress data.
+                for (int i = 0; i < data.Length; i++)
+                {
+                    WriteBitsInByte(compressedData, codeTable[data[i]]);
+                }
+                //Write last byte for any case, maybe buffer is not full and in that case it wil not copy with function WriteBitInByte.
+                //Also we need to align bits to be BigEndian for decompress 
+                //Exemple: is we code las byte to be 000101 and our code is just 101 then we must shift byteBuffer for 3 space left.
+                //Final result will be 101000, this is important because we later read data for decompress from left to right.
+
+                // We need to check last writen bitPosition and substract with 8 to get how much position we need to shift.
+                int shift = 8 - bitPosition;
+                compressedData[(headerLength + newDataLength) - 1] = (byte)(byteBuffer << shift);
+
+                //Reset buffer.
+                byteBuffer = 0;
+
+                return compressedData;
+            });
+        }
+        /// <summary>
+        /// Decompress passed data, async method.
+        /// </summary>
+        /// <param name="data">Data for decompresion.</param>
+        /// <param name="progress">Object for updating UI. See <see cref="Progress{T}"/> for more.</param>
+        /// <returns></returns>
+        public Task<byte[]> DecomressAsync(byte[] data, IProgress<string> progress)
+        {
+            return Task.Run(() => {
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
+                byteBuffer = 0;
+                progress.Report("Creating code table.");
+                //After ReadHeader(data) codeTable will contain all codes and appropriate original value for each code.
+                TableItem[] codeTable = ReadHeader(data);
+
+                progress.Report("Creating binnary tree.");
+                ShanNode root = CreateBinaryTreeForDecopress(codeTable);
+
+                byte[] decompressData = new byte[lenghtOfUncompressData];
+                progress.Report("Decompressing data.");
+                //Important prepare byteBuffer, need only once.
+                byteBuffer = data[bytePosition++];
+                //Reset mask for ReadBitFromByte.
+                mask = 128;
+                for (int i = 0; i < lenghtOfUncompressData; i++)
+                {
+                    decompressData[i] = DecompressByte(root, data);
+                }
+
+                //Stop stopwatch.
+                sw.Stop();
+                progress.Report("Data decompression finish in:"+ sw.ElapsedMilliseconds + "ms");
+
+                return decompressData;
+            });
+        }
+        /// <summary>
+        /// Decompress passed data, async method.
+        /// </summary>
+        /// <param name="data">Data for decompressing.</param>
+        /// <returns>Decompressed data.</returns>
+        public Task<byte[]> DecomressAsync(byte[] data)
+        {
+            return Task.Run(() => {
+
+                byteBuffer = 0;
+                //After ReadHeader(data) codeTable will contain all codes and appropriate original value for each code.
+                TableItem[] codeTable = ReadHeader(data);
+
+                ShanNode root = CreateBinaryTreeForDecopress(codeTable);
+
+                byte[] decompressData = new byte[lenghtOfUncompressData];
+                //Important prepare byteBuffer, need only once.
+                byteBuffer = data[bytePosition++];
+                //Reset mask for ReadBitFromByte.
+                mask = 128;
+                for (int i = 0; i < lenghtOfUncompressData; i++)
+                {
+                    decompressData[i] = DecompressByte(root, data);
+                }
+
+                return decompressData;
             });
         }
         /// <summary>
@@ -148,9 +319,8 @@ namespace PhotoEditor.Utility
 
             return compressedData;
         }
-
         /// <summary>
-        /// Dompress passed data.
+        /// Decompress passed data.
         /// </summary>
         /// <param name="data">Data for decompressing.</param>
         /// <returns>Decompressed data.</returns>
@@ -166,13 +336,12 @@ namespace PhotoEditor.Utility
 
             //Important prepare byteBuffer, need only once.
             byteBuffer = data[bytePosition++];
-            //Reset mask
+            //Reset mask for ReadBitFromByte.
             mask = 128;
             for (int i = 0; i < lenghtOfUncompressData; i++)
             {
                 decompressData[i] = DecompressByte(root, data);
             }
-
             return decompressData;
         }
         /// <summary>
@@ -231,7 +400,7 @@ namespace PhotoEditor.Utility
                 if (bitPosition != 0)
                 {
                     int shift = 8 - bitPosition;
-                    //Shift code to be writen in bigEndian.
+                    //Shift code to be writen in BigEndian format (BigEndian for bits not bytes some kind of bigEndian).
                     data[bytePosition++] = (byte)(byteBuffer << shift);
                     //Reset values.
                     byteBuffer = bitPosition = 0;
@@ -367,12 +536,8 @@ namespace PhotoEditor.Utility
                     mask = mask >> 1;
                 }
             }
-            //I will read code in opposite direction, while creating binnary tree, so there is no need for reverse.
+
             return code;
-            //Reverse code because we readit on reverse order.
-            //char[] codeArray = code.ToCharArray();
-            //Array.Reverse(codeArray);
-            //return new string(codeArray);
         }
         /// <summary>
         /// Read single bit from data, ased on bitPosition and bytePosition info.
@@ -455,14 +620,12 @@ namespace PhotoEditor.Utility
             for (int i = 0; i < codeTable.Length; i++)
             {
                 //Create branch for each code.
-                //CreateTreeBranch(root, codeTable[i].value, codeTable[i].code.ToCharArray(), codeTable[i].code.Length - 1);
                 CreateTreeBranch(root, codeTable[i].value, codeTable[i].code.ToCharArray(), 0);
             }
             return root;
         }
         /// <summary>
         /// Create singe branch for binary tree, branch reprezent one code.
-        /// <para>Code are readed in opposite direction?.</para>
         /// </summary>
         /// <param name="node">Current node. Initial value root node.</param>
         /// <param name="value">Original data value.</param>

@@ -34,8 +34,8 @@
             </Grid>
             
             <StackPanel>
-                <Button Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonOkClicked"/>
-                <Button Content="Cancel" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonCancelClicked"/>
+                <Button Content="OK" x:Name="buttonOK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonOkClicked"/>
+                <Button Content="Exit" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonExitClicked"/>
             </StackPanel>
         </StackPanel>
     </Border>

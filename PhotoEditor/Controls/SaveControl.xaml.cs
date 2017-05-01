@@ -33,7 +33,7 @@ namespace PhotoEditor.Controls
             this.loadAndSaveHelper = loadAndSaveHelper;
         }
 
-        private void ButtonOkClicked(object sender, RoutedEventArgs e)
+        private async void ButtonOkClicked(object sender, RoutedEventArgs e)
         {
             DownsampledImage downsapledImage;
             if (radioButtonRed.IsChecked.Equals(true))
@@ -46,26 +46,18 @@ namespace PhotoEditor.Controls
 
 
             //Progress update.
-            //Progress<string> progress = new Progress<string>((value) => { labelProgress.Content = value; });
+            Progress<string> progress = new Progress<string>((value) => { labelProgress.Content = value; });
 
             ShannonFano shannonFano = new ShannonFano();
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            byte[] compressImage = shannonFano.Compress(downsapledImage.ImageData);
-            sw.Stop();
-            labelProgress.Content = "Compress finish in: " + sw.ElapsedMilliseconds +"ms.";
+            byte[] compressImageData = await shannonFano.CompressAsync(downsapledImage.ImageData, progress);
 
-            byte[] data = shannonFano.Decompress(compressImage);
-            downsapledImage = new DownsampledImage(shannonFano.Decompress(compressImage));
-            viewLogic.MainImage.Image = downsapledImage.Image;
 
-            //loadAndSaveHelper.SaveCustomImage(compressImage);
-            //loadAndSaveHelper.SaveCustomImage(downsapledImage.ImageData);
-            //Window.GetWindow(this).Close();
+            loadAndSaveHelper.SaveCustomImage(compressImageData);
+            buttonOK.IsEnabled = false;
         }
 
-        private void ButtonCancelClicked(object sender, RoutedEventArgs e)
+        private void ButtonExitClicked(object sender, RoutedEventArgs e)
         {
             Window.GetWindow(this).Close();
         }
