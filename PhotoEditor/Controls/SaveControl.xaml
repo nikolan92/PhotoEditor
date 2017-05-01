@@ -6,11 +6,12 @@
              MouseLeftButtonDown="WindowMouseLeftButtonDownClicked"
              xmlns:local="clr-namespace:PhotoEditor.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="170" d:DesignWidth="300" Background="{StaticResource DarkBackground}">
+             d:DesignHeight="192" d:DesignWidth="300" Background="{StaticResource DarkBackground}">
     <Border Padding="5">
         <StackPanel>
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -27,7 +28,11 @@
                 <RadioButton x:Name="radioButtonRed" GroupName="radioButtonGroup" IsChecked="True" Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
                 <RadioButton x:Name="radioButtonGreen" GroupName="radioButtonGroup" Grid.Row="2" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
                 <RadioButton x:Name="radioButtonBlue" GroupName="radioButtonGroup" Grid.Row="3" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+
+                <Label Content="Status:" Grid.Row="4" Foreground="{StaticResource FontColor}"/>
+                <Label x:Name="labelProgress" Content="Idle" Grid.Row="4" Grid.Column="1" Foreground="{StaticResource FontColor}"/>
             </Grid>
+            
             <StackPanel>
                 <Button Content="OK" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonOkClicked"/>
                 <Button Content="Cancel" Background="#FF1F1F1F" Margin="0,5,0,0" Foreground="{StaticResource FontColor}" Click="ButtonCancelClicked"/>

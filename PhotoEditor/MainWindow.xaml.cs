@@ -280,7 +280,7 @@ namespace PhotoEditor
                 saveControl.WindowStyle = WindowStyle.None;
                 saveControl.AllowsTransparency = true;
                 saveControl.Width = 300;
-                saveControl.Height = 170;
+                saveControl.Height = 192;
                 saveControl.Left = Left + 100;
                 saveControl.Top = Top + 100;
                 saveControl.ShowDialog();

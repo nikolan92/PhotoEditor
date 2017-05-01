@@ -44,16 +44,24 @@ namespace PhotoEditor.Controls
                 downsapledImage = new DownsampledImage(viewLogic.MainImage.Image, DownsampledImage.SpareChannel.Blue);
 
 
+
+            //Progress update.
+            //Progress<string> progress = new Progress<string>((value) => { labelProgress.Content = value; });
+
+            ShannonFano shannonFano = new ShannonFano();
+
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            byte[] compressImage = ShannonFano.Compress(downsapledImage.ImageData);
+            byte[] compressImage = shannonFano.Compress(downsapledImage.ImageData);
             sw.Stop();
+            labelProgress.Content = "Compress finish in: " + sw.ElapsedMilliseconds +"ms.";
 
-            Console.WriteLine("Sannon Fano:"+sw.ElapsedMilliseconds + "ms");
+            byte[] data = shannonFano.Decompress(compressImage);
+            downsapledImage = new DownsampledImage(shannonFano.Decompress(compressImage));
+            viewLogic.MainImage.Image = downsapledImage.Image;
 
             //loadAndSaveHelper.SaveCustomImage(compressImage);
             //loadAndSaveHelper.SaveCustomImage(downsapledImage.ImageData);
-            //viewLogic.MainImage.Image = downsapledImage.Image;
             //Window.GetWindow(this).Close();
         }
 
