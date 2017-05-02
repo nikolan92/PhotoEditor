@@ -46,7 +46,7 @@ namespace PhotoEditor.Utility
                 if (extension.Equals(".sf"))//Custom Image
                 {
                     //This is compress data.
-                    byte[] imageInBytes = LoadImageAsByteArray(openFileDialog.FileName);
+                    byte[] imageInBytes = LoadByteArray(openFileDialog.FileName);
 
                     ShannonFano sannonFano = new ShannonFano();
                     imageInBytes = await sannonFano.DecomressAsync(imageInBytes);
@@ -111,7 +111,6 @@ namespace PhotoEditor.Utility
                 }
             }
         }
-
         public void SaveCustomImage(byte[] imageInBytes)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -128,17 +127,16 @@ namespace PhotoEditor.Utility
 
                 string finalFilePath = path + "\\" + fileName + ".sf";
 
-                SaveImageAsByteArray(finalFilePath, imageInBytes);
+                SaveByteArray(finalFilePath, imageInBytes);
             }
         }
-
-        private byte[] LoadImageAsByteArray(string path)
+        private byte[] LoadByteArray(string path)
         {
             return System.IO.File.ReadAllBytes(path);
         }
-        public void SaveImageAsByteArray(string path, byte[] image)
+        public void SaveByteArray(string path, byte[] data)
         {
-            File.WriteAllBytes(path, image);
+            File.WriteAllBytes(path, data);
         }
     }
 }

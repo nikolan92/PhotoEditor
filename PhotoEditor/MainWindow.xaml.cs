@@ -286,7 +286,20 @@ namespace PhotoEditor
                 saveControl.ShowDialog();
             }
         }
-
+        private void ButtonAudioProcessingClicked(object sender, RoutedEventArgs e)
+        {
+            Window saveControl = new Window
+            {
+                Content = new AudioProcessingControl()
+            };
+            saveControl.WindowStyle = WindowStyle.None;
+            saveControl.AllowsTransparency = true;
+            saveControl.Width = 800;
+            saveControl.Height = 400;
+            saveControl.Left = Left + 100;
+            saveControl.Top = Top + 100;
+            saveControl.ShowDialog();
+        }
         private void UndoRedoButtonStatusChanged()
         {
             if (histortHelper.CanUndo())
@@ -317,5 +330,6 @@ namespace PhotoEditor
                     break;
             }
         }
+
     }
 }

@@ -41,6 +41,11 @@
                     <ImageBrush ImageSource="MenuIcons/ChanellView-48.png" Stretch="Uniform"/>
                 </Button.Background>
             </Button>
+            <Button Style="{StaticResource menuButton}" Margin="20,0,0,0" Click="ButtonAudioProcessingClicked" HorizontalAlignment="Left">
+                <Button.Background>
+                    <ImageBrush ImageSource="MenuIcons/WAV-48.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
             <Button Style="{StaticResource menuButton}" Margin="20,0,0,0" Click="ButtonSettingsClicked" HorizontalAlignment="Left">
                 <Button.Background>
                     <ImageBrush ImageSource="MenuIcons/Settings-40.png" Stretch="Uniform"/>

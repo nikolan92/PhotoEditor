@@ -58,6 +58,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\AudioProcessingControl.xaml.cs">
+      <DependentUpon>AudioProcessingControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ChannelHistogramControl.xaml.cs">
       <DependentUpon>ChannelHistogramControl.xaml</DependentUpon>
     </Compile>
@@ -97,10 +100,15 @@
     <Compile Include="Utility\InfinityStack.cs" />
     <Compile Include="Utility\LoadAndSaveHelper.cs" />
     <Compile Include="Utility\ShannonFano.cs" />
+    <Compile Include="Utility\WavFile.cs" />
     <Compile Include="ViewModel\ViewLogic.cs" />
     <Compile Include="ViewModel\ViewWithChanell.cs" />
     <Compile Include="ViewModel\ViewWithHistogram.cs" />
     <Compile Include="ViewModel\ViewWithoutChanell.cs" />
+    <Page Include="Controls\AudioProcessingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\ChannelHistogramControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -214,6 +222,24 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="MenuIcons\Downsample-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MenuIcons\WAV-48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MenuIcons\Add-50.png" />
+    <Resource Include="MenuIcons\Remove-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MenuIcons\Pause-48.png" />
+    <Resource Include="MenuIcons\Play-48.png" />
+    <Resource Include="MenuIcons\Stop-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MenuIcons\Close-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MenuIcons\Merge-50.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
