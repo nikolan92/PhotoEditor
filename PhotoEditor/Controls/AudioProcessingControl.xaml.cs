@@ -87,7 +87,12 @@ namespace PhotoEditor.Controls
         }
         private void ButtonSaveClicked(object sender, RoutedEventArgs e)
         {
-            
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Audio files(*.wav)|*.wav";
+            if (saveFileDialog.ShowDialog().Equals(true))
+            {
+                System.IO.File.WriteAllBytes(saveFileDialog.FileName, soundStream.ToArray());
+            }
         }
         private void ButtonAddClicked(object sender, RoutedEventArgs e)
         {
