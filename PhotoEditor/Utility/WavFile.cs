@@ -63,7 +63,7 @@ namespace PhotoEditor.Utility
         /// </summary>
         /// <param name="n">N-th sampe.</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void SmoothWav(int n)
+        public void AverageSample(int n)
         {
             if (n < 1)
                 throw new ArgumentOutOfRangeException("n");
@@ -74,7 +74,7 @@ namespace PhotoEditor.Utility
             {
                 for (int j = 0; j < NumChannels; j++)
                 {
-                    int averageSample = wavData[i - NumChannels] + wavData[i + NumChannels] / 2;
+                    int averageSample = ((int)wavData[(i + j) - NumChannels] + wavData[(i + j) + NumChannels]) / 2;
                     wavData[i + j] = (byte) averageSample;
                 }
             }

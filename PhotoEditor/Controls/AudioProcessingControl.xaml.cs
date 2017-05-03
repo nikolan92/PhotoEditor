@@ -143,9 +143,11 @@ namespace PhotoEditor.Controls
             {
                 WavFile smoothWav = new WavFile(soundStream.ToArray());
                 //Smooth evry sample.
-                smoothWav.SmoothWav(50);
+                smoothWav.AverageSample(numericBox.Value);
 
                 soundStream.Dispose();
+
+                soundPlayer.Stop();
                 soundPlayer.Dispose();
 
                 soundStream = new MemoryStream(smoothWav.WavData);

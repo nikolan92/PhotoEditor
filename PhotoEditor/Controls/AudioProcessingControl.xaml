@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             
+             xmlns:numericBox="clr-namespace:PhotoEditor.Controls.HelperControls"
              xmlns:local="clr-namespace:PhotoEditor.Controls"
              mc:Ignorable="d" 
              MouseLeftButtonDown="WindowMouseLeftButtonDownClicked"
@@ -36,6 +36,7 @@
                         <ImageBrush ImageSource="/PhotoEditor;component/MenuIcons/Average Value-48.png" Stretch="Uniform"/>
                     </Button.Background>
                 </Button>
+                <numericBox:NumericBox x:Name="numericBox" Minimum="1" Value="20" Maximum="20000" Margin="18,0,0,0"></numericBox:NumericBox>
             </StackPanel>
             
             <!--Audio control buttons-->
