@@ -10,7 +10,7 @@ namespace PhotoEditor.Utility
     public class WavFile
     {
 
-        private const int headerOffset = 44;
+        private const int HEADER_OFFSET = 44;
 
         /// <summary>
         /// Number of channels <para>Exemple: Mono = 1, Stereo = 2, etc.</para>
@@ -57,9 +57,27 @@ namespace PhotoEditor.Utility
             BytesPerSample /= 8;
             DataLength = BitConverter.ToInt32(wavData, 40);
         }
-        public void SmoothWav()
+        /// <summary>
+        /// Evry n-th sample is replaced with previous and next sample average value. 
+        /// <para>Parameter 'n' must be grater than 0.</para>
+        /// </summary>
+        /// <param name="n">N-th sampe.</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public void SmoothWav(int n)
         {
-            
+            if (n < 1)
+                throw new ArgumentOutOfRangeException("n");
+
+            int step = NumChannels * n;
+
+            for (int i = HEADER_OFFSET + NumChannels; i < WavData.Length - NumChannels; i = i + step)
+            {
+                for (int j = 0; j < NumChannels; j++)
+                {
+                    int averageSample = wavData[i - NumChannels] + wavData[i + NumChannels] / 2;
+                    wavData[i + j] = (byte) averageSample;
+                }
+            }
         }
         /// <summary>
         /// Create one single wav file from passed wav array. Concatanation starts from index 0 to the last.
@@ -91,7 +109,7 @@ namespace PhotoEditor.Utility
             //This is the number of bytes in the data.
             //You can also think of this as the size
             //of the read of the subchunk following this number.
-            int subchunk2Size = newLength - headerOffset;
+            int subchunk2Size = newLength - HEADER_OFFSET;
 
             //This is the size of the 
             //entire file in bytes minus 8 bytes for the
@@ -116,7 +134,7 @@ namespace PhotoEditor.Utility
             for (int i = 1; i < wavFiles.Length; i++)
             {
                 //Copy current file to the new one.
-                Buffer.BlockCopy(wavFiles[i].WavData, headerOffset, newWavFile, dstOffset, wavFiles[i].DataLength);
+                Buffer.BlockCopy(wavFiles[i].WavData, HEADER_OFFSET, newWavFile, dstOffset, wavFiles[i].DataLength);
                 //Calculate new offset
                 dstOffset += wavFiles[i].DataLength;
             }

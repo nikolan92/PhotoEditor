@@ -137,6 +137,22 @@ namespace PhotoEditor.Controls
                 System.IO.File.WriteAllBytes(saveFileDialog.FileName, newWavFile);
             }
         }
+        private void ButtonSmoothClicked(object sender, RoutedEventArgs e)
+        {
+            if (soundStream != null)
+            {
+                WavFile smoothWav = new WavFile(soundStream.ToArray());
+                //Smooth evry sample.
+                smoothWav.SmoothWav(50);
+
+                soundStream.Dispose();
+                soundPlayer.Dispose();
+
+                soundStream = new MemoryStream(smoothWav.WavData);
+
+                soundPlayer.Stream = soundStream;
+            }
+        }
         public class AudioModel : ObservableObject
         {
             private string lastLoadedFile;
@@ -148,5 +164,7 @@ namespace PhotoEditor.Controls
             }
 
         }
+
+
     }
 }
