@@ -27,6 +27,7 @@ namespace PhotoEditor.Controls
     public partial class AudioProcessingControl : UserControl
     {
         SoundPlayer soundPlayer;
+        MemoryStream soundStream;
         public ObservableCollection<string> WavItems { get; set; }
 
         public AudioModel AudioFile { get; set; }
@@ -56,7 +57,11 @@ namespace PhotoEditor.Controls
         {
             if (soundPlayer != null)
             {
-                soundPlayer.Play();
+                try
+                {
+                    soundPlayer.Play();
+                }
+                catch (InvalidOperationException exception) { MessageBox.Show(exception.ToString()); }
             }
         }
         private void ButtonStopClicked(object sender, RoutedEventArgs e)
@@ -74,7 +79,9 @@ namespace PhotoEditor.Controls
                 if (soundPlayer != null)
                     soundPlayer.Dispose();
 
-                soundPlayer = new SoundPlayer(openFileDialog.FileName);
+                soundStream = new MemoryStream(System.IO.File.ReadAllBytes(openFileDialog.FileName));
+                soundPlayer = new SoundPlayer(soundStream);
+
                 AudioFile.LastLoadedFile = openFileDialog.FileName;
             }
         }
@@ -111,7 +118,17 @@ namespace PhotoEditor.Controls
                 wavFiles[i] = new WavFile(System.IO.File.ReadAllBytes(WavItems[i]));
             }
 
-            byte[] newWavFile = WavFile.Concat(wavFiles);
+            byte[] newWavFile;
+
+            try
+            {
+                newWavFile = WavFile.Concat(wavFiles);
+            }
+            catch (InvalidOperationException exception)
+            {
+                MessageBox.Show(exception.Message);
+                return;
+            }
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Audio files(*.wav)|*.wav";

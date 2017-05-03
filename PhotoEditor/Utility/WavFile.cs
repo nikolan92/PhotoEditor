@@ -76,7 +76,8 @@ namespace PhotoEditor.Utility
                     throw new InvalidOperationException("NumChannel and SampleRate must be the same!");
                 //Calculating new wavFile length.
                 //I don't know why but some file have wrong dataLength information so better way to calculate new length is to substract whole file size by 44(header size).
-                newLength += wavFiles[i].WavData.Length - headerOffset; 
+
+                newLength += wavFiles[i].DataLength;
             }
             //Create new byte array.
             byte[] newWavFile = new byte[newLength];
@@ -85,12 +86,28 @@ namespace PhotoEditor.Utility
             //Copy whole first file (with header), this will be done manualy.
             Buffer.BlockCopy(wavFiles[0].WavData, 0, newWavFile, dstOffset, wavFiles[0].WavData.Length);
 
-            int newDataLength = newLength - headerOffset;
+
+            //Subchunk2Size = NumSamples * NumChannels * BitsPerSample/8
+            //This is the number of bytes in the data.
+            //You can also think of this as the size
+            //of the read of the subchunk following this number.
+            int subchunk2Size = newLength - headerOffset;
+
+            //This is the size of the 
+            //entire file in bytes minus 8 bytes for the
+            //two fields not included in this count:
+            //ChunkID and ChunkSize.
+            int chunkSize = subchunk2Size - 8;
             //Change header info. (Actualy change only number of bytes in the data.)
-            newWavFile[40] = (byte)  newDataLength;
-            newWavFile[41] = (byte) (newDataLength >> 8);
-            newWavFile[42] = (byte) (newDataLength >> 16);
-            newWavFile[43] = (byte) (newDataLength >> 24);
+            newWavFile[40] = (byte)chunkSize;
+            newWavFile[41] = (byte)(chunkSize >> 8);
+            newWavFile[42] = (byte)(chunkSize >> 16);
+            newWavFile[43] = (byte)(chunkSize >> 24);
+
+            newWavFile[4] = (byte)subchunk2Size;
+            newWavFile[5] = (byte) (subchunk2Size >> 8);
+            newWavFile[6] = (byte) (subchunk2Size >> 16);
+            newWavFile[7] = (byte) (subchunk2Size >> 24);
 
             //Calculate offset.
             dstOffset = wavFiles[0].WavData.Length;
@@ -99,11 +116,11 @@ namespace PhotoEditor.Utility
             for (int i = 1; i < wavFiles.Length; i++)
             {
                 //Copy current file to the new one.
-                Buffer.BlockCopy(wavFiles[i].WavData, headerOffset, newWavFile, dstOffset, wavFiles[i].WavData.Length - headerOffset);
+                Buffer.BlockCopy(wavFiles[i].WavData, headerOffset, newWavFile, dstOffset, wavFiles[i].DataLength);
                 //Calculate new offset
-                dstOffset += (wavFiles[i].WavData.Length - headerOffset);
+                dstOffset += wavFiles[i].DataLength;
             }
-            
+
             return newWavFile;
         }
     }
